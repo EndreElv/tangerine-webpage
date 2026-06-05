@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Input from '../components/Input.astro';
+import { href } from '../data/nav.ts';
+
+const SOCIALS = [
+  { label: 'YouTube', href: 'https://www.youtube.com/channel/UC8U-vN0_ezdCjGfT34sxBlQ' },
+  { label: 'Twitter / X', href: 'http://twitter.com/TangerineTool' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/tangerine-central' },
+];
+---
+<BaseLayout title="Contact — Tangerine" description="Questions about deployment, customization, or a free trial? Our team is here to help.">
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">Contact Us</p>
+        <h1>Let&rsquo;s talk</h1>
+        <p>Questions about deployment, customization, or a free trial? Our team is here to help.</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-contact">
+        <Card elevation="raised" padded={false}>
+          <div class="mk-form" id="contact-form-wrap" style="padding:var(--space-5)">
+            <form class="mk-form__view mk-contact__form" id="contact-form" novalidate>
+              <h3>Send us a message</h3>
+              <Input label="Full name" required placeholder="Amara Okafor" name="name" />
+              <Input label="Work email" type="email" required placeholder="you@organization.org" name="email" />
+              <Input label="Organization" placeholder="Your organization" name="org" />
+              <label class="mk-textarea">
+                <span>How can we help?</span>
+                <textarea rows="4" name="message" placeholder="Tell us about your program…"></textarea>
+              </label>
+              <Button type="submit" variant="primary" block>Send message</Button>
+            </form>
+            <div class="mk-form__done mk-trial__done">
+              <div class="mk-trial__check">&#10003;</div>
+              <h3>Message sent</h3>
+              <p>Thanks for reaching out — we&rsquo;ll be in touch soon.</p>
+              <Button as="a" href={href('home')} variant="secondary">Back to home</Button>
+            </div>
+          </div>
+        </Card>
+
+        <aside class="mk-contact__aside">
+          <h3>Other ways to reach us</h3>
+          <p>Prefer a quick start? Request a trial directly.</p>
+          <Button as="a" href={href('trial')} variant="accent">Get Tangerine</Button>
+          <div class="mk-contact__socials">
+            <h4>Follow along</h4>
+            {SOCIALS.map((s) => (
+              <a href={s.href} target="_blank" rel="noopener" class="mk-contact__social">{s.label} &rarr;</a>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // Visual-only success state (no backend yet — flagged as a fast-follow).
+  const form = document.getElementById('contact-form');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('contact-form-wrap')?.classList.add('mk-form--sent');
+  });
+</script>

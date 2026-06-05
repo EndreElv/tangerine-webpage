@@ -1,0 +1,23 @@
+---
+// Checkbox with label + optional description. Ported from components/forms/Checkbox.jsx.
+interface Props {
+  label?: string;
+  description?: string;
+  round?: boolean;
+  disabled?: boolean;
+  name?: string;
+  checked?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { label, description, round = false, disabled = false, name, checked = false, class: className, ...rest } = Astro.props;
+---
+<label class:list={['tg-check', { 'tg-check--round': round, 'tg-check--disabled': disabled }, className]}>
+  <input type="checkbox" name={name} checked={checked} disabled={disabled} {...rest} />
+  <span class="tg-check__box">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  {(label || description) && (
+    <span class="tg-check__text">{label}{description && <small>{description}</small>}</span>
+  )}
+</label>

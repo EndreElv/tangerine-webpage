@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
+import { href } from '../data/nav.ts';
+import { TG_STORIES } from '../data/content.ts';
+---
+<BaseLayout title="User Stories — Tangerine" description="How organizations around the world put Tangerine to work.">
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">User Stories</p>
+        <h1>From the field</h1>
+        <p>How organizations around the world put Tangerine to work.</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-stories">
+        {TG_STORIES.map((s) => (
+          <Card interactive elevation="raised" class="mk-story">
+            <Badge tone="brand">{s.org}</Badge>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+            <span class="mk-story__tag">{s.tag}</span>
+            <span class="mk-link">Continue Reading &rarr;</span>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mk-cta">
+      <h2>Have a Tangerine story to share?</h2>
+      <p>We&rsquo;d love to hear how you&rsquo;re using Tangerine in your program.</p>
+      <Button as="a" href={href('contact')} variant="primary" size="lg">Get in touch</Button>
+    </section>
+  </main>
+</BaseLayout>

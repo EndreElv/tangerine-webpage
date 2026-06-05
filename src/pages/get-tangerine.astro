@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Input from '../components/Input.astro';
+import Checkbox from '../components/Checkbox.astro';
+import Badge from '../components/Badge.astro';
+import { href } from '../data/nav.ts';
+import { TG_PRICING } from '../data/content.ts';
+
+const SUB_BENEFITS = [
+  'Technical support and troubleshooting',
+  'Training resources, including Moodle-based courses',
+  'Participation in a global peer community of Tangerine users',
+  'Contribution to and use of a shared instrument library (coming soon)',
+];
+---
+<BaseLayout title="Get Tangerine — Pricing" description="Tangerine is open-source and free to self-host. A paid subscription provides a ready-to-use, hosted and maintained instance.">
+  <main>
+    <div class="mk-breadcrumb"><a href={href('home')}>HOME</a> &gt; <strong>PRICING</strong></div>
+
+    <section class="mk-prod-hero">
+      <h1>Tangerine subscription pricing</h1>
+      <p>Tangerine is open-source software — anyone can download the source code and run it on their own server, for free. This is ideal for organizations with the technical capacity to manage their own hosting and support.</p>
+      <p>A paid subscription to Tangerine Central provides a ready-to-use, hosted and maintained version: your own secure “instance” where you can build assessments, collect and access data, and manage users — without worrying about setup, updates, security, or server maintenance.</p>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-pricing">
+        {TG_PRICING.map((tier) => (
+          <div class:list={['mk-tier', { 'mk-tier--featured': tier.featured }]}>
+            {tier.featured && <div class="mk-tier__flag">Most popular</div>}
+            <h3 class="mk-tier__name">{tier.name}</h3>
+            <div class="mk-tier__price">{tier.price}</div>
+            <div class="mk-tier__period">{tier.period || ' '}</div>
+            <ul class="mk-tier__list">
+              <li>{tier.results}</li>
+              <li>{tier.support}</li>
+              {tier.features.map((f) => <li>{f}</li>)}
+            </ul>
+            <Button
+              as="a"
+              href={tier.cta === 'Contact us' ? href('contact') : '#trial-form'}
+              variant={tier.featured ? 'primary' : 'secondary'}
+              block
+            >{tier.cta}</Button>
+          </div>
+        ))}
+      </div>
+      <p class="mk-pricing__note">Subscription fees are per year and per organization. Prices are subject to change.</p>
+
+      <div class="mk-benefits">
+        <h3>Every subscription includes</h3>
+        <ul>
+          {SUB_BENEFITS.map((b) => <li>{b}</li>)}
+        </ul>
+        <p>This model supports sustainability and collaboration, while keeping the core software free and open to all.</p>
+      </div>
+    </section>
+
+    {/* Free trial */}
+    <section class="mk-section mk-section--soft" id="trial-form">
+      <div class="mk-trial__grid">
+        <div class="mk-trial__copy">
+          <p class="tg-eyebrow">Free trial</p>
+          <h2 style="font-size:var(--text-3xl)">Want to try before you buy?</h2>
+          <p>Tell us a little about your program and we&rsquo;ll set you up with a free trial of the Tangerine suite — assessments, classroom tracking, and coaching, online or off.</p>
+          <ul class="mk-trial__benefits">
+            <li>Open-source &amp; offline-first</li>
+            <li>Deploy on tablets or smartphones</li>
+            <li>Sync to secure servers when connected</li>
+          </ul>
+        </div>
+        <Card elevation="raised" padded={false}>
+          <div class="mk-form" id="trial-form-wrap" style="padding:var(--space-5)">
+            <form class="mk-form__view mk-trial__form" id="trial-form-el" novalidate>
+              <h3>Request your free trial</h3>
+              <Input label="Full name" required placeholder="Amara Okafor" name="name" />
+              <Input label="Work email" type="email" required placeholder="you@organization.org" name="email" />
+              <Input label="Organization" placeholder="e.g. School-to-School International" name="org" />
+              <Input label="Country" placeholder="Where will you deploy?" name="country" />
+              <Checkbox label="Send me product updates and field stories." name="updates" checked />
+              <Button type="submit" variant="primary" block>Request trial</Button>
+            </form>
+            <div class="mk-form__done mk-trial__done">
+              <div class="mk-trial__check">&#10003;</div>
+              <h3>Thanks — you&rsquo;re on the list!</h3>
+              <p>Our team will reach out with your trial details shortly.</p>
+              <Button as="a" href={href('home')} variant="secondary">Back to home</Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </section>
+
+    {/* Host yourself */}
+    <section class="mk-section">
+      <Card elevation="raised" accentTop class="mk-selfhost">
+        <div>
+          <Badge tone="brand">Open source</Badge>
+          <h2>Host Tangerine yourself</h2>
+          <p>Tangerine&rsquo;s open nature lets you host the platform on your own server and adapt its code to your needs. We only ask that if you make changes, you share modified code with the community. Tangerine is available under the GNU General Public License.</p>
+          <Button as="a" variant="secondary" href="https://github.com/Tangerine-Community/" target="_blank" rel="noopener">
+            Source code &amp; docs on GitHub<span slot="icon-right">&#8599;</span>
+          </Button>
+        </div>
+        <div class="mk-selfhost__mark"><img src="/assets/product-icons/tangerine.png" alt="" /></div>
+      </Card>
+    </section>
+
+    <section class="mk-cta">
+      <h2>Ready to get started with Tangerine?</h2>
+      <Button as="a" href="#trial-form" variant="accent" size="lg">Start free trial</Button>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // Visual-only success state (no backend yet — flagged as a fast-follow).
+  const form = document.getElementById('trial-form-el');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('trial-form-wrap')?.classList.add('mk-form--sent');
+  });
+</script>

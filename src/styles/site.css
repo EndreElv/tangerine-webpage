@@ -1,0 +1,29 @@
+/* ============================================================
+   Production-only additions, layered on top of the ported
+   prototype styles (components.css + marketing.css).
+   The prototype faked behavior with React state; here we use
+   platform features (native <details>, :target, CSS) plus tiny
+   JS islands, so most interactions work even without JS.
+   ============================================================ */
+
+html { scroll-behavior: smooth; }
+
+/* Anchored sections (e.g. #trial-form) shouldn't hide under the sticky nav. */
+:target { scroll-margin-top: 90px; }
+
+/* ---------- FAQ accordion (native <details name>, single-open) ---------- */
+.mk-faq summary.mk-faq__q { list-style: none; }
+.mk-faq summary.mk-faq__q::-webkit-details-marker { display: none; }
+.mk-faq__icon::before { content: '+'; }
+.mk-faq[open] { border-color: var(--tangerine-300); }
+.mk-faq[open] > .mk-faq__q .mk-faq__icon { background: var(--tangerine-500); color: #fff; }
+.mk-faq[open] > .mk-faq__q .mk-faq__icon::before { content: '−'; }
+
+/* ---------- Form success-state toggle (Contact + Trial) ---------- */
+.mk-form__done { display: none; }
+.mk-form--sent .mk-form__view { display: none; }
+.mk-form--sent .mk-form__done { display: flex; }
+
+/* ---------- Whole-card links (stories on Home, Help index) ---------- */
+.mk-card-link { display: block; text-decoration: none; color: inherit; }
+.mk-card-link:hover { text-decoration: none; }

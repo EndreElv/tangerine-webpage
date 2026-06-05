@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import { href } from '../data/nav.ts';
+import { TG_PRINCIPLES, TG_TEAM } from '../data/content.ts';
+---
+<BaseLayout title="About — Tangerine Central" description="Tangerine Central is a women-owned small business dedicated to advancing efficient, effective data collection and use in any setting — online or offline.">
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">About</p>
+        <h1>What is Tangerine Central?</h1>
+        <p>Tangerine Central is a women-owned small business dedicated to advancing efficient, effective data collection and use in any setting — online or offline. Our mission is to ease the burden of data collection and deliver timely, actionable insights in even the most resource-constrained settings.</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-principles">
+        {TG_PRINCIPLES.map((p) => (
+          <Card elevation="raised" accentTop class="mk-principle">
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </Card>
+        ))}
+      </div>
+      <p class="mk-section__lead" style="margin-top:var(--space-7)">
+        Our team combines expert leadership in learning assessment, digital platform development, AI and data science, program implementation, and capacity strengthening — grounded in decades of experience designing, deploying, and scaling Tangerine. We provide hands-on support with instrument design, deployment, and data analysis, plus training and capacity building so partners can use Tangerine effectively and independently.
+      </p>
+    </section>
+
+    <section class="mk-section mk-section--soft">
+      <div class="mk-story-feature">
+        <div>
+          <p class="tg-eyebrow">From paper to progress</p>
+          <h2>The story of Tangerine</h2>
+          <p>Tangerine was born out of first-hand experience collecting student data in low-resource and remote contexts. During a challenging early-grade reading assessment on an RTI International project, co-founders Carmen and Amber found themselves buried in paper forms, battling malfunctioning staplers, illegible copies, and missing data. The process was slow, outdated, and error-prone. They knew there had to be a better way.</p>
+          <p>That moment sparked Tangerine: a digital solution to improve data quality, streamline fieldwork, and enable real-time monitoring — no more waiting weeks to discover surprises in the data. What started in 2011 as a tool for early reading assessments has grown into a versatile, offline-first platform used in 65+ countries.</p>
+          <p>In 2025, Tangerine was brought under the management of Tangerine Central, led by Carmen and Amber — continuing to help governments and organizations unlock the power of data to improve lives.</p>
+        </div>
+        <blockquote class="mk-belief">
+          <span class="tg-eyebrow">Our guiding belief</span>
+          <p>Quality, timely data has the power to change lives for the better — and is essential to helping communities shape their own futures.</p>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <p class="tg-eyebrow" style="text-align:center">Our Team</p>
+      <h2 class="mk-section__title">Get to know our team</h2>
+      <div class="mk-team">
+        {TG_TEAM.map((m) => (
+          <Card elevation="raised" class="mk-member">
+            <img class="mk-member__photo" src={m.photo} alt={m.name} />
+            <h3>{m.name}</h3>
+            <p class="mk-member__role">{m.role}</p>
+            <p class="mk-member__bio">{m.bio}</p>
+            <a class="mk-link" href={m.linkedin} target="_blank" rel="noopener">Connect on LinkedIn &rarr;</a>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mk-section mk-section--soft">
+      <Card elevation="raised" accentTop class="mk-podcast">
+        <div>
+          <p class="tg-eyebrow">Podcast</p>
+          <h2>Open-source tools in low-resource settings</h2>
+          <p>Hear Dr.&nbsp;Carmen Strigel explain why open-source software like Tangerine and Loquat matters for education in low-resource settings.</p>
+          <Button as="a" variant="secondary" href="https://bold.expert/ai-edtech-in-low-resource-settings/" target="_blank" rel="noopener">Listen to the podcast</Button>
+        </div>
+        <div class="mk-podcast__mark"><img src="/assets/product-icons/tangerine.png" alt="" /></div>
+      </Card>
+    </section>
+
+    <section class="mk-cta">
+      <h2>Ready to try Tangerine?</h2>
+      <Button as="a" href={href('trial')} variant="accent" size="lg">Get Started</Button>
+    </section>
+  </main>
+</BaseLayout>
