@@ -1,0 +1,28 @@
+---
+// Circular icon-only button. Ported from components/buttons/IconButton.jsx.
+interface Props {
+  variant?: 'ghost' | 'soft' | 'solid';
+  size?: 'sm' | 'md' | 'lg';
+  label: string;
+  as?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  variant = 'ghost',
+  size = 'md',
+  label,
+  as = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+const Tag = as as any;
+---
+<Tag
+  class:list={['tg-iconbtn', `tg-iconbtn--${variant}`, `tg-iconbtn--${size}`, className]}
+  aria-label={label}
+  title={label}
+  {...rest}
+>
+  <slot />
+</Tag>

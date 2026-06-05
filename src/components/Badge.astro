@@ -1,0 +1,17 @@
+---
+// Status / category badge. Ported from components/feedback/Badge.jsx.
+interface Props {
+  tone?: 'neutral' | 'brand' | 'accent' | 'success' | 'warning' | 'error' | 'info';
+  solid?: boolean;
+  dot?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { tone = 'neutral', solid = false, dot = false, class: className, ...rest } = Astro.props;
+---
+<span
+  class:list={['tg-badge', `tg-badge--${tone}`, { 'tg-badge--solid': solid }, className]}
+  {...rest}
+>
+  {dot && <span class="tg-badge__dot" />}<slot />
+</span>

@@ -1,0 +1,23 @@
+---
+// Filter / selection tag chip. Ported from components/feedback/Tag.jsx.
+// Static display variant (no client click handler); `href` makes it a link.
+interface Props {
+  selected?: boolean;
+  href?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { selected = false, href, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+<Tag
+  class:list={[
+    'tg-tag',
+    { 'tg-tag--selected': selected, 'tg-tag--clickable': !!href },
+    className,
+  ]}
+  href={href}
+  {...rest}
+>
+  <slot />
+</Tag>

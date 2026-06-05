@@ -1,0 +1,21 @@
+---
+// Circular avatar with image or initials fallback.
+// Ported from components/feedback/Avatar.jsx.
+interface Props {
+  src?: string;
+  name?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  ring?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { src, name = '', size = 'md', ring = false, class: className, ...rest } = Astro.props;
+const initials = name.trim().split(/\s+/).slice(0, 2).map((w) => w[0] || '').join('').toUpperCase();
+---
+<span
+  class:list={['tg-avatar', `tg-avatar--${size}`, { 'tg-avatar__ring': ring }, className]}
+  title={name}
+  {...rest}
+>
+  {src ? <img src={src} alt={name} /> : initials}
+</span>

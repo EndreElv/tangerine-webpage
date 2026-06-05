@@ -1,0 +1,25 @@
+/* ============================================================
+   Tangerine — Webfonts
+   Self-hosted woff2 (latin subset). Substitutes flagged in readme:
+   - "Baloo 2"    : rounded geometric display, echoes the logo wordmark
+   - "Mulish"     : humanist UI + body sans
+   - "Roboto Mono": tabular / data + code
+   ============================================================ */
+
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:400;font-display:swap;src:url('/assets/fonts/baloo2-400.woff2') format('woff2');}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:500;font-display:swap;src:url('/assets/fonts/baloo2-500.woff2') format('woff2');}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:600;font-display:swap;src:url('/assets/fonts/baloo2-600.woff2') format('woff2');}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:700;font-display:swap;src:url('/assets/fonts/baloo2-700.woff2') format('woff2');}
+@font-face{font-family:'Baloo 2';font-style:normal;font-weight:800;font-display:swap;src:url('/assets/fonts/baloo2-800.woff2') format('woff2');}
+
+@font-face{font-family:'Mulish';font-style:italic;font-weight:400;font-display:swap;src:url('/assets/fonts/mulish-400i.woff2') format('woff2');}
+@font-face{font-family:'Mulish';font-style:normal;font-weight:300;font-display:swap;src:url('/assets/fonts/mulish-300.woff2') format('woff2');}
+@font-face{font-family:'Mulish';font-style:normal;font-weight:400;font-display:swap;src:url('/assets/fonts/mulish-400.woff2') format('woff2');}
+@font-face{font-family:'Mulish';font-style:normal;font-weight:500;font-display:swap;src:url('/assets/fonts/mulish-500.woff2') format('woff2');}
+@font-face{font-family:'Mulish';font-style:normal;font-weight:600;font-display:swap;src:url('/assets/fonts/mulish-600.woff2') format('woff2');}
+@font-face{font-family:'Mulish';font-style:normal;font-weight:700;font-display:swap;src:url('/assets/fonts/mulish-700.woff2') format('woff2');}
+@font-face{font-family:'Mulish';font-style:normal;font-weight:800;font-display:swap;src:url('/assets/fonts/mulish-800.woff2') format('woff2');}
+
+@font-face{font-family:'Roboto Mono';font-style:normal;font-weight:400;font-display:swap;src:url('/assets/fonts/robotomono-400.woff2') format('woff2');}
+@font-face{font-family:'Roboto Mono';font-style:normal;font-weight:500;font-display:swap;src:url('/assets/fonts/robotomono-500.woff2') format('woff2');}
+@font-face{font-family:'Roboto Mono';font-style:normal;font-weight:700;font-display:swap;src:url('/assets/fonts/robotomono-700.woff2') format('woff2');}

@@ -1,0 +1,33 @@
+---
+// Tangerine primary action button. Ported from components/buttons/Button.jsx.
+// Renders as <button> by default; pass `as="a"` (with href) for links.
+interface Props {
+  variant?: 'primary' | 'accent' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  block?: boolean;
+  as?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  variant = 'primary',
+  size = 'md',
+  block = false,
+  as = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+const Tag = as as any;
+---
+<Tag
+  class:list={[
+    'tg-btn',
+    `tg-btn--${variant}`,
+    `tg-btn--${size}`,
+    { 'tg-btn--block': block },
+    className,
+  ]}
+  {...rest}
+>
+  <slot name="icon-left" /><slot /><slot name="icon-right" />
+</Tag>

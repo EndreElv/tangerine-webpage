@@ -1,0 +1,144 @@
+---
+// Sticky top navigation. Ported from ui_kits/marketing-site/Nav.jsx.
+// Desktop: dropdowns reveal on hover/focus (CSS). Mobile/keyboard: a burger
+// toggles the panel and dropdown buttons toggle their submenu (small JS island).
+import { href, NAV } from '../data/nav.ts';
+---
+<header class="mk-nav">
+  <div class="mk-nav__inner">
+    <a class="mk-nav__brand" href="/" aria-label="Tangerine home">
+      <img src="/assets/logos/tangerine-logo.png" alt="Tangerine" />
+    </a>
+
+    <nav class="mk-nav__links" aria-label="Primary">
+      {NAV.map((item) =>
+        item.menu ? (
+          <div class="mk-nav__item">
+            <button
+              type="button"
+              class="mk-nav__link"
+              data-menu-toggle
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {item.label}<span class="mk-nav__caret">▾</span>
+            </button>
+            <div class="mk-nav__menu">
+              {item.menu.map((m) => (
+                <a class="mk-nav__menu-link" href={href(m.to)}>{m.label}</a>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="mk-nav__item">
+            <a class="mk-nav__link" href={href(item.to!)}>{item.label}</a>
+          </div>
+        )
+      )}
+    </nav>
+
+    <a class="tg-btn tg-btn--primary tg-btn--sm mk-nav__cta" href="/get-tangerine">Get Started</a>
+
+    <button class="mk-nav__burger" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="mk-nav-links">
+      <span class="mk-nav__burger-bar"></span>
+      <span class="mk-nav__burger-bar"></span>
+      <span class="mk-nav__burger-bar"></span>
+    </button>
+  </div>
+</header>
+
+<style is:global>
+  /* Dropdowns hidden by default; revealed on hover / keyboard focus / click-open. */
+  .mk-nav__menu { display: none; }
+  .mk-nav__item:hover > .mk-nav__menu,
+  .mk-nav__item:focus-within > .mk-nav__menu,
+  .mk-nav__item.is-open > .mk-nav__menu { display: flex; }
+
+  .mk-nav__caret { transition: transform var(--dur-fast) var(--ease-out); }
+  .mk-nav__item:hover > .mk-nav__link .mk-nav__caret,
+  .mk-nav__item.is-open > .mk-nav__link .mk-nav__caret { transform: rotate(180deg); }
+
+  /* Burger — hidden on desktop */
+  .mk-nav__burger {
+    display: none; margin-left: var(--space-3); width: 42px; height: 42px;
+    flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    background: none; border: none; cursor: pointer; border-radius: var(--radius-sm);
+  }
+  .mk-nav__burger:hover { background: var(--tangerine-50); }
+  .mk-nav__burger-bar {
+    width: 22px; height: 2px; background: var(--text-strong); border-radius: 2px;
+    transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  }
+  .mk-nav--open .mk-nav__burger-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .mk-nav--open .mk-nav__burger-bar:nth-child(2) { opacity: 0; }
+  .mk-nav--open .mk-nav__burger-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  @media (max-width: 900px) {
+    .mk-nav__burger { display: flex; margin-left: auto; }
+    .mk-nav__cta { display: none; }
+    /* Slide-down panel when open (links are hidden by marketing.css otherwise) */
+    .mk-nav.mk-nav--open .mk-nav__links {
+      display: flex; flex-direction: column; gap: 2px;
+      position: absolute; top: 100%; left: 0; right: 0; margin: 0;
+      background: var(--surface-card); border-bottom: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-lg); padding: var(--space-3);
+    }
+    .mk-nav--open .mk-nav__item { width: 100%; }
+    .mk-nav--open .mk-nav__link { width: 100%; justify-content: space-between; }
+    /* In the mobile panel, submenus stack inline and only show when toggled open */
+    .mk-nav--open .mk-nav__menu {
+      position: static; box-shadow: none; border: none; padding: 2px 0 6px var(--space-5);
+      min-width: 0;
+    }
+    .mk-nav--open .mk-nav__item:hover > .mk-nav__menu,
+    .mk-nav--open .mk-nav__item:focus-within > .mk-nav__menu { display: none; }
+    .mk-nav--open .mk-nav__item.is-open > .mk-nav__menu { display: flex; }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector('.mk-nav');
+  if (nav) {
+    const burger = nav.querySelector('.mk-nav__burger');
+    const closeAllMenus = () => {
+      nav.querySelectorAll('.mk-nav__item.is-open').forEach((el) => {
+        el.classList.remove('is-open');
+        el.querySelector('[data-menu-toggle]')?.setAttribute('aria-expanded', 'false');
+      });
+    };
+
+    burger?.addEventListener('click', () => {
+      const open = nav.classList.toggle('mk-nav--open');
+      burger.setAttribute('aria-expanded', String(open));
+      if (!open) closeAllMenus();
+    });
+
+    nav.querySelectorAll('[data-menu-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.mk-nav__item');
+        if (!item) return;
+        const willOpen = !item.classList.contains('is-open');
+        nav.querySelectorAll('.mk-nav__item.is-open').forEach((el) => {
+          if (el !== item) {
+            el.classList.remove('is-open');
+            el.querySelector('[data-menu-toggle]')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+        item.classList.toggle('is-open', willOpen);
+        btn.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        nav.classList.remove('mk-nav--open');
+        burger?.setAttribute('aria-expanded', 'false');
+        closeAllMenus();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!nav.contains(e.target as Node)) closeAllMenus();
+    });
+  }
+</script>

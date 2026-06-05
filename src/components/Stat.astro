@@ -1,0 +1,32 @@
+---
+// Big-number metric display. Ported from components/surfaces/Stat.jsx.
+interface Props {
+  value: string | number;
+  label?: string;
+  delta?: string;
+  trend?: 'up' | 'down';
+  size?: 'sm' | 'md' | 'lg';
+  gradient?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  value,
+  label,
+  delta,
+  trend = 'up',
+  size = 'md',
+  gradient = false,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+<div class:list={['tg-stat', `tg-stat--${size}`, className]} {...rest}>
+  <span class:list={['tg-stat__value', { 'tg-stat__value--gradient': gradient }]}>{value}</span>
+  {label && <span class="tg-stat__label">{label}</span>}
+  {delta && (
+    <span class:list={['tg-stat__delta', `tg-stat__delta--${trend}`]}>
+      {trend === 'up' ? '▲' : '▼'} {delta}
+    </span>
+  )}
+</div>

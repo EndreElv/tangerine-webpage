@@ -1,0 +1,38 @@
+---
+// Surface container. Ported from components/surfaces/Card.jsx.
+// `media` (string) renders a 16:9 cover image at the top; for richer media use
+// the `media` named slot. `padded` wraps the default slot in tg-card__body.
+interface Props {
+  elevation?: 'flat' | 'raised';
+  interactive?: boolean;
+  accentTop?: boolean;
+  media?: string;
+  mediaAlt?: string;
+  padded?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  elevation = 'flat',
+  interactive = false,
+  accentTop = false,
+  media,
+  mediaAlt = '',
+  padded = true,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+<div
+  class:list={[
+    'tg-card',
+    `tg-card--${elevation}`,
+    { 'tg-card--interactive': interactive, 'tg-card--accent': accentTop },
+    className,
+  ]}
+  {...rest}
+>
+  {media && <img class="tg-card__media" src={media} alt={mediaAlt} />}
+  <slot name="media" />
+  {padded ? <div class="tg-card__body"><slot /></div> : <slot />}
+</div>

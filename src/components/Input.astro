@@ -1,0 +1,42 @@
+---
+// Labelled text input with helper / error states.
+// Ported from components/forms/Input.jsx. `...rest` forwards name/type/
+// placeholder/etc. straight to the <input>.
+interface Props {
+  label?: string;
+  required?: boolean;
+  helpText?: string;
+  error?: string;
+  disabled?: boolean;
+  id?: string;
+  name?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  label,
+  required = false,
+  helpText,
+  error,
+  disabled = false,
+  id,
+  name,
+  class: className,
+  ...rest
+} = Astro.props;
+const slugLabel = label ? label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : undefined;
+const fieldId = id || name || slugLabel || 'field';
+---
+<div class:list={['tg-field', { 'tg-field--error': !!error, 'tg-field--disabled': disabled }, className]}>
+  {label && (
+    <label class="tg-field__label" for={fieldId}>
+      {label}{required && <span class="tg-field__req">*</span>}
+    </label>
+  )}
+  <div class="tg-field__wrap">
+    <slot name="icon-left" />
+    <input id={fieldId} name={name} class="tg-field__input" disabled={disabled} aria-invalid={!!error} {...rest} />
+    <slot name="icon-right" />
+  </div>
+  {(error || helpText) && <span class="tg-field__help">{error || helpText}</span>}
+</div>

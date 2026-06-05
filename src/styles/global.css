@@ -1,0 +1,16 @@
+/* ============================================================
+   Tangerine — global stylesheet entry point
+   Imported once in BaseLayout. Order matters:
+   tokens (fonts → colors → type → spacing → base)
+   → design-system component styles
+   → marketing-site layout styles
+   ============================================================ */
+
+@import './tokens/fonts.css';
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/base.css';
+
+@import './components.css';
+@import './marketing.css';

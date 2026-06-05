@@ -1,0 +1,25 @@
+---
+// Site footer. Ported from ui_kits/marketing-site/Footer.jsx — links are now
+// real anchors via the central route map.
+import { href, FOOTER_COLS } from '../data/nav.ts';
+---
+<footer class="mk-foot">
+  <div class="mk-foot__inner">
+    <div class="mk-foot__brand">
+      <img src="/assets/logos/tangerine-logo.png" alt="Tangerine" />
+      <p>Open-source, offline-first data collection for education — deployed in 65+ countries.</p>
+    </div>
+    {FOOTER_COLS.map((col) => (
+      <div class="mk-foot__col">
+        <h4>{col.title}</h4>
+        {col.links.map(([label, to]) => (
+          <a class="mk-foot__link" href={href(to)}>{label}</a>
+        ))}
+      </div>
+    ))}
+  </div>
+  <div class="mk-foot__bar">
+    <span>©2025 Tangerine Central, LLC. All Rights Reserved.</span>
+    <span>The Tangerine Logo is a registered trademark of Research Triangle Institute.</span>
+  </div>
+</footer>

@@ -1,0 +1,129 @@
+/* ============================================================
+   Tangerine — Color tokens
+   Brand pulled from the citrus-slice logo: a warm tangerine→gold
+   gradient. Primary = #F05424 (tangerine), Accent = #FCB40C (gold).
+   Neutrals are warm (very slight orange tint) so UI sits in the
+   same family as the brand rather than reading cold/blue.
+   ============================================================ */
+
+:root {
+  /* ---- Base palette: Tangerine (primary) ---- */
+  --tangerine-50:  #FFF3EE;
+  --tangerine-100: #FFE2D6;
+  --tangerine-200: #FFC4AD;
+  --tangerine-300: #FB9D7C;
+  --tangerine-400: #F57650;
+  --tangerine-500: #F05424;   /* brand base */
+  --tangerine-600: #DD431A;   /* hover */
+  --tangerine-700: #B23414;   /* pressed */
+  --tangerine-800: #8A2810;
+  --tangerine-900: #5E1B0B;
+
+  /* ---- Base palette: Gold (accent — gradient endpoint) ---- */
+  --gold-50:  #FFF8E6;
+  --gold-100: #FFEFC2;
+  --gold-200: #FFE08A;
+  --gold-300: #FCCB44;
+  --gold-400: #FCB40C;        /* accent base */
+  --gold-500: #E89F00;
+  --gold-600: #C28400;
+  --gold-700: #946400;
+  --gold-800: #6B4900;
+
+  /* ---- Rind: the pale citrus yellow-green from the logo ring ---- */
+  --rind-200: #F4F2A8;
+  --rind-400: #E6E36A;
+
+  /* ---- Warm neutrals ---- */
+  --neutral-0:   #FFFFFF;
+  --neutral-50:  #FBF8F6;
+  --neutral-100: #F5F0EC;
+  --neutral-200: #E9E1DA;
+  --neutral-300: #D6CABF;
+  --neutral-400: #B0A398;
+  --neutral-500: #847669;
+  --neutral-600: #5F544A;
+  --neutral-700: #443B34;
+  --neutral-800: #2A2420;
+  --neutral-900: #181411;
+
+  /* ---- Semantic hues ---- */
+  --green-100: #D8F2E4;
+  --green-500: #1F9D6B;
+  --green-700: #15724D;
+
+  --red-100: #FBDED9;
+  --red-500: #E03A2F;
+  --red-700: #A8241C;
+
+  --blue-100: #D8E8FD;
+  --blue-500: #2D7FF0;
+  --blue-700: #1A57B0;
+
+  --amber-100: #FFEFC2;
+  --amber-500: #E89F00;
+  --amber-700: #946400;
+
+  /* ---- Signature brand gradient (logo wordmark) ---- */
+  --gradient-brand: linear-gradient(90deg, var(--tangerine-500) 0%, #F0701A 45%, var(--gold-400) 100%);
+  --gradient-brand-diag: linear-gradient(135deg, var(--tangerine-600) 0%, var(--tangerine-500) 40%, var(--gold-400) 100%);
+  --gradient-sunrise: linear-gradient(180deg, var(--gold-300) 0%, var(--tangerine-500) 100%);
+
+  /* ============================================================
+     Semantic aliases — reference these in components, not raw hues
+     ============================================================ */
+
+  /* Surfaces */
+  --surface-page:      var(--neutral-50);
+  --surface-card:      var(--neutral-0);
+  --surface-sunken:    var(--neutral-100);
+  --surface-inverse:   var(--neutral-900);
+  --surface-brand:     var(--tangerine-500);
+  --surface-brand-soft:var(--tangerine-50);
+  --surface-accent-soft:var(--gold-50);
+
+  /* Text */
+  --text-strong:   var(--neutral-900);
+  --text-body:     var(--neutral-700);
+  --text-muted:    var(--neutral-500);
+  --text-subtle:   var(--neutral-400);
+  --text-on-brand: var(--neutral-0);
+  --text-inverse:  var(--neutral-0);
+  --text-link:     var(--tangerine-600);
+
+  /* Borders */
+  --border-subtle:  var(--neutral-200);
+  --border-default: var(--neutral-300);
+  --border-strong:  var(--neutral-400);
+  --border-brand:   var(--tangerine-500);
+
+  /* Interactive — primary (tangerine) */
+  --action-bg:          var(--tangerine-500);
+  --action-bg-hover:    var(--tangerine-600);
+  --action-bg-active:   var(--tangerine-700);
+  --action-fg:          var(--neutral-0);
+  --action-ring:        color-mix(in srgb, var(--tangerine-500) 40%, transparent);
+
+  /* Interactive — accent (gold) */
+  --accent-bg:        var(--gold-400);
+  --accent-bg-hover:  var(--gold-500);
+  --accent-bg-active: var(--gold-600);
+  --accent-fg:        var(--neutral-900);
+
+  /* Focus */
+  --focus-ring: var(--tangerine-500);
+
+  /* Status */
+  --status-success-fg: var(--green-700);
+  --status-success-bg: var(--green-100);
+  --status-success:    var(--green-500);
+  --status-error-fg:   var(--red-700);
+  --status-error-bg:   var(--red-100);
+  --status-error:      var(--red-500);
+  --status-info-fg:    var(--blue-700);
+  --status-info-bg:    var(--blue-100);
+  --status-info:       var(--blue-500);
+  --status-warning-fg: var(--amber-700);
+  --status-warning-bg: var(--amber-100);
+  --status-warning:    var(--amber-500);
+}

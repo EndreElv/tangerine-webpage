@@ -1,0 +1,53 @@
+<!-- @dsCard group="Marketing Site" viewport="1320x880" name="Marketing Site" subtitle="Tangerine.org homepage — hero, product suite, impact (click-through)" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tangerine — Marketing Site</title>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="marketing.css">
+<style> body { margin: 0; } </style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel" src="content.jsx"></script>
+<script type="text/babel" src="Nav.jsx"></script>
+<script type="text/babel" src="Footer.jsx"></script>
+<script type="text/babel" src="Home.jsx"></script>
+<script type="text/babel" src="ProductPage.jsx"></script>
+<script type="text/babel" src="Resources.jsx"></script>
+<script type="text/babel" src="Support.jsx"></script>
+<script type="text/babel" src="TrialPage.jsx"></script>
+<script type="text/babel">
+const { useState } = React;
+function App() {
+  const [page, setPage] = useState('home');
+  const go = (p) => { setPage(p); window.scrollTo({ top: 0 }); };
+  const product = window.TG_PRODUCTS[page];
+  const helpSlug = page.indexOf('help/') === 0 ? page.slice(5) : null;
+  return (
+    <div className="mk-app">
+      <Nav go={go} />
+      {page === 'home' && <Home go={go} />}
+      {product && <ProductPage go={go} product={product} />}
+      {page === 'impact' && <ImpactPage go={go} />}
+      {page === 'user-stories' && <UserStoriesPage go={go} />}
+      {page === 'faqs' && <FaqsPage go={go} />}
+      {page === 'about' && <AboutPage go={go} />}
+      {page === 'contact' && <ContactPage go={go} />}
+      {page === 'help' && <HelpPage go={go} />}
+      {helpSlug && <HelpArticlePage go={go} slug={helpSlug} />}
+      {page === 'trial' && <TrialPage go={go} />}
+      <Footer go={go} />
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

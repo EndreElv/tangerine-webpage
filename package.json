@@ -1,0 +1,20 @@
+{
+  "name": "tangerine-webpage",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tangerine marketing site — production Astro build of the design-system prototype.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "engines": {
+    "node": ">=18.20.8"
+  },
+  "dependencies": {
+    "astro": "^5.6.1"
+  }
+}

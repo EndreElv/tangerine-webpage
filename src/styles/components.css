@@ -1,0 +1,142 @@
+/* ============================================================
+   Tangerine Design System — component styles
+   Extracted verbatim from reference/_ds_bundle.js (the prototype's
+   injected <style> blocks). One block per component.
+   ============================================================ */
+
+/* ---------- components/buttons/Button.jsx ---------- */
+.tg-btn{--_bg:var(--tangerine-500);--_bgh:var(--tangerine-600);--_bga:var(--tangerine-700);--_fg:#fff;
+    display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+    font-family:var(--font-sans);font-weight:var(--fw-bold);border:none;cursor:pointer;
+    border-radius:var(--radius-pill);background:var(--_bg);color:var(--_fg);
+    transition:background var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out);
+    text-decoration:none;white-space:nowrap;line-height:1;}
+  .tg-btn:hover{background:var(--_bgh);}
+  .tg-btn:active{background:var(--_bga);transform:translateY(1px);}
+  .tg-btn:focus-visible{outline:var(--border-width-2) solid var(--focus-ring);outline-offset:2px;}
+  .tg-btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none;}
+  .tg-btn--sm{font-size:var(--text-sm);padding:8px 16px;}
+  .tg-btn--md{font-size:var(--text-md);padding:11px 22px;}
+  .tg-btn--lg{font-size:var(--text-lg);padding:15px 30px;}
+  .tg-btn--primary{box-shadow:var(--shadow-brand);} 
+  .tg-btn--primary:hover{box-shadow:0 12px 28px rgba(240,84,36,.38);}
+  .tg-btn--accent{--_bg:var(--gold-400);--_bgh:var(--gold-500);--_bga:var(--gold-600);--_fg:var(--neutral-900);box-shadow:var(--shadow-sm);}
+  .tg-btn--secondary{--_bg:transparent;--_bgh:var(--tangerine-50);--_bga:var(--tangerine-100);--_fg:var(--tangerine-600);
+    box-shadow:inset 0 0 0 var(--border-width-2) var(--tangerine-500);}
+  .tg-btn--ghost{--_bg:transparent;--_bgh:var(--neutral-100);--_bga:var(--neutral-200);--_fg:var(--text-body);}
+  .tg-btn--block{width:100%;}
+
+/* ---------- components/buttons/IconButton.jsx ---------- */
+.tg-iconbtn{display:inline-flex;align-items:center;justify-content:center;border:none;cursor:pointer;
+    border-radius:var(--radius-circle);background:transparent;color:var(--text-body);
+    transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);}
+  .tg-iconbtn:hover{background:var(--neutral-100);color:var(--text-strong);}
+  .tg-iconbtn:active{transform:translateY(1px);}
+  .tg-iconbtn:focus-visible{outline:var(--border-width-2) solid var(--focus-ring);outline-offset:2px;}
+  .tg-iconbtn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none;}
+  .tg-iconbtn--sm{width:32px;height:32px;font-size:16px;}
+  .tg-iconbtn--md{width:40px;height:40px;font-size:20px;}
+  .tg-iconbtn--lg{width:48px;height:48px;font-size:24px;}
+  .tg-iconbtn--solid{background:var(--tangerine-500);color:#fff;}
+  .tg-iconbtn--solid:hover{background:var(--tangerine-600);color:#fff;}
+  .tg-iconbtn--soft{background:var(--tangerine-50);color:var(--tangerine-600);}
+  .tg-iconbtn--soft:hover{background:var(--tangerine-100);color:var(--tangerine-700);}
+
+/* ---------- components/feedback/Avatar.jsx ---------- */
+.tg-avatar{display:inline-flex;align-items:center;justify-content:center;flex:none;
+    font-family:var(--font-display);font-weight:var(--fw-bold);color:#fff;overflow:hidden;
+    border-radius:var(--radius-circle);background:var(--gradient-brand-diag);position:relative;}
+  .tg-avatar img{width:100%;height:100%;object-fit:cover;}
+  .tg-avatar--sm{width:28px;height:28px;font-size:11px;}
+  .tg-avatar--md{width:40px;height:40px;font-size:15px;}
+  .tg-avatar--lg{width:56px;height:56px;font-size:21px;}
+  .tg-avatar--xl{width:80px;height:80px;font-size:30px;}
+  .tg-avatar__ring{box-shadow:0 0 0 2px var(--surface-card),0 0 0 4px var(--tangerine-300);}
+
+/* ---------- components/feedback/Badge.jsx ---------- */
+.tg-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-sans);
+    font-weight:var(--fw-bold);font-size:var(--text-xs);line-height:1;
+    padding:5px 10px;border-radius:var(--radius-pill);white-space:nowrap;}
+  .tg-badge__dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+  .tg-badge--neutral{background:var(--neutral-100);color:var(--neutral-700);}
+  .tg-badge--brand{background:var(--tangerine-50);color:var(--tangerine-700);}
+  .tg-badge--accent{background:var(--gold-100);color:var(--gold-700);}
+  .tg-badge--success{background:var(--status-success-bg);color:var(--status-success-fg);}
+  .tg-badge--warning{background:var(--status-warning-bg);color:var(--status-warning-fg);}
+  .tg-badge--error{background:var(--status-error-bg);color:var(--status-error-fg);}
+  .tg-badge--info{background:var(--status-info-bg);color:var(--status-info-fg);}
+  .tg-badge--solid.tg-badge--brand{background:var(--tangerine-500);color:#fff;}
+  .tg-badge--solid.tg-badge--success{background:var(--status-success);color:#fff;}
+  .tg-badge--solid.tg-badge--error{background:var(--status-error);color:#fff;}
+
+/* ---------- components/feedback/Tag.jsx ---------- */
+.tg-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-sans);
+    font-weight:var(--fw-semibold);font-size:var(--text-sm);line-height:1;color:var(--text-body);
+    padding:6px 12px;border-radius:var(--radius-pill);background:var(--neutral-100);
+    border:var(--border-width) solid transparent;transition:all var(--dur-fast) var(--ease-out);}
+  .tg-tag--selected{background:var(--tangerine-50);color:var(--tangerine-700);border-color:var(--tangerine-300);}
+  .tg-tag--clickable{cursor:pointer;}
+  .tg-tag--clickable:hover{background:var(--neutral-200);}
+  .tg-tag--selected.tg-tag--clickable:hover{background:var(--tangerine-100);}
+  .tg-tag__remove{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+    width:16px;height:16px;border-radius:50%;color:var(--text-muted);font-size:14px;line-height:1;border:none;background:transparent;}
+  .tg-tag__remove:hover{background:var(--neutral-300);color:var(--text-strong);}
+
+/* ---------- components/forms/Checkbox.jsx ---------- */
+.tg-check{display:inline-flex;align-items:flex-start;gap:10px;font-family:var(--font-sans);
+    cursor:pointer;color:var(--text-body);font-size:var(--text-md);line-height:1.4;}
+  .tg-check__box{flex:none;width:22px;height:22px;border-radius:var(--radius-sm);
+    border:var(--border-width-2) solid var(--border-strong);background:var(--surface-card);
+    display:inline-flex;align-items:center;justify-content:center;color:#fff;
+    transition:background var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out);}
+  .tg-check__box svg{width:14px;height:14px;opacity:0;transform:scale(.6);transition:all var(--dur-fast) var(--ease-spring);}
+  .tg-check input{position:absolute;opacity:0;width:0;height:0;}
+  .tg-check input:checked + .tg-check__box{background:var(--tangerine-500);border-color:var(--tangerine-500);}
+  .tg-check input:checked + .tg-check__box svg{opacity:1;transform:scale(1);}
+  .tg-check input:focus-visible + .tg-check__box{outline:var(--border-width-2) solid var(--focus-ring);outline-offset:2px;}
+  .tg-check--round .tg-check__box{border-radius:var(--radius-circle);}
+  .tg-check--disabled{opacity:.5;cursor:not-allowed;pointer-events:none;}
+  .tg-check__text small{display:block;color:var(--text-muted);font-size:var(--text-sm);}
+
+/* ---------- components/forms/Input.jsx ---------- */
+.tg-field{display:flex;flex-direction:column;gap:6px;font-family:var(--font-sans);}
+  .tg-field__label{font-size:var(--text-sm);font-weight:var(--fw-bold);color:var(--text-strong);}
+  .tg-field__req{color:var(--tangerine-600);margin-left:2px;}
+  .tg-field__wrap{display:flex;align-items:center;gap:8px;background:var(--surface-card);
+    border:var(--border-width) solid var(--border-default);border-radius:var(--radius-md);
+    padding:0 14px;transition:border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out);}
+  .tg-field__wrap:focus-within{border-color:var(--tangerine-500);box-shadow:0 0 0 3px var(--action-ring);}
+  .tg-field__input{flex:1;border:none;outline:none;background:transparent;font:inherit;
+    color:var(--text-strong);padding:11px 0;min-width:0;}
+  .tg-field__input::placeholder{color:var(--text-subtle);}
+  .tg-field__icon{color:var(--text-muted);display:inline-flex;font-size:18px;}
+  .tg-field__help{font-size:var(--text-xs);color:var(--text-muted);}
+  .tg-field--error .tg-field__wrap{border-color:var(--status-error);}
+  .tg-field--error .tg-field__wrap:focus-within{box-shadow:0 0 0 3px var(--status-error-bg);}
+  .tg-field--error .tg-field__help{color:var(--status-error-fg);}
+  .tg-field--disabled{opacity:.55;pointer-events:none;}
+
+/* ---------- components/surfaces/Card.jsx ---------- */
+.tg-card{background:var(--surface-card);border-radius:var(--radius-lg);
+    border:var(--border-width) solid var(--border-subtle);overflow:hidden;
+    transition:box-shadow var(--dur-base) var(--ease-out),transform var(--dur-base) var(--ease-out);}
+  .tg-card--flat{box-shadow:none;}
+  .tg-card--raised{box-shadow:var(--shadow-md);border-color:transparent;}
+  .tg-card--interactive{cursor:pointer;}
+  .tg-card--interactive:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px);}
+  .tg-card--accent{border-top:4px solid var(--tangerine-500);}
+  .tg-card__body{padding:var(--space-5);}
+  .tg-card__media{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
+
+/* ---------- components/surfaces/Stat.jsx ---------- */
+.tg-stat{display:flex;flex-direction:column;gap:2px;font-family:var(--font-sans);}
+  .tg-stat__value{font-family:var(--font-display);font-weight:var(--fw-extra);line-height:1;
+    color:var(--text-strong);font-size:var(--text-4xl);letter-spacing:-0.02em;}
+  .tg-stat__value--gradient{background:var(--gradient-brand);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .tg-stat__label{font-size:var(--text-sm);color:var(--text-muted);font-weight:var(--fw-semibold);}
+  .tg-stat__delta{display:inline-flex;align-items:center;gap:3px;font-size:var(--text-xs);
+    font-weight:var(--fw-bold);margin-top:4px;}
+  .tg-stat__delta--up{color:var(--status-success);}
+  .tg-stat__delta--down{color:var(--status-error);}
+  .tg-stat--sm .tg-stat__value{font-size:var(--text-2xl);}
+  .tg-stat--lg .tg-stat__value{font-size:var(--text-6xl);}

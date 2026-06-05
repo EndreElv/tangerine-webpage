@@ -1,0 +1,21 @@
+<!-- @dsCard group="Colors" viewport="700x170" name="Brand Gradients" subtitle="The signature wordmark gradient + variants." -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 16px; background: var(--surface-card); font-family: var(--font-sans); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .g { height: 84px; border-radius: var(--radius-md); display: flex; align-items: flex-end; padding: 10px; box-shadow: var(--shadow-sm); }
+  .name { font-size: 11px; font-weight: 800; color: #fff; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="g" style="background:var(--gradient-brand)"><span class="name">--gradient-brand</span></div>
+    <div class="g" style="background:var(--gradient-brand-diag)"><span class="name">--gradient-brand-diag</span></div>
+    <div class="g" style="background:var(--gradient-sunrise)"><span class="name">--gradient-sunrise</span></div>
+  </div>
+</body>
+</html>

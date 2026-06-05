@@ -1,0 +1,41 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Semantic / Status" subtitle="Success, warning, error, info — soft bg + solid + text." -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { margin: 0; padding: 16px; background: var(--surface-card); font-family: var(--font-sans); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .col { display: flex; flex-direction: column; gap: 6px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 700; }
+  .bar { display: flex; gap: 4px; }
+  .b { flex: 1; height: 28px; border-radius: var(--radius-xs); border: 1px solid var(--border-subtle); }
+  .lab { font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="col">
+      <span class="pill" style="background:var(--status-success-bg);color:var(--status-success-fg)">● Success</span>
+      <div class="bar"><div class="b" style="background:var(--green-100)"></div><div class="b" style="background:var(--green-500)"></div><div class="b" style="background:var(--green-700)"></div></div>
+      <span class="lab">#1F9D6B</span>
+    </div>
+    <div class="col">
+      <span class="pill" style="background:var(--status-warning-bg);color:var(--status-warning-fg)">▲ Warning</span>
+      <div class="bar"><div class="b" style="background:var(--amber-100)"></div><div class="b" style="background:var(--amber-500)"></div><div class="b" style="background:var(--amber-700)"></div></div>
+      <span class="lab">#E89F00</span>
+    </div>
+    <div class="col">
+      <span class="pill" style="background:var(--status-error-bg);color:var(--status-error-fg)">✕ Error</span>
+      <div class="bar"><div class="b" style="background:var(--red-100)"></div><div class="b" style="background:var(--red-500)"></div><div class="b" style="background:var(--red-700)"></div></div>
+      <span class="lab">#E03A2F</span>
+    </div>
+    <div class="col">
+      <span class="pill" style="background:var(--status-info-bg);color:var(--status-info-fg)">ⓘ Info</span>
+      <div class="bar"><div class="b" style="background:var(--blue-100)"></div><div class="b" style="background:var(--blue-500)"></div><div class="b" style="background:var(--blue-700)"></div></div>
+      <span class="lab">#2D7FF0</span>
+    </div>
+  </div>
+</body>
+</html>
