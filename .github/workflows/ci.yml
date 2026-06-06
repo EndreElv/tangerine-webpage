@@ -1,0 +1,45 @@
+name: CI
+
+# Pre-merge gate chain for tangerine-webpage. Runs on every PR.
+# Gates are deterministic and OWNED outside the agent's autonomous path
+# (this file is CODEOWNER-protected). No deploy/monitoring secrets are exposed
+# to these jobs — they run PR-authored code, so secret access here would be an
+# exfiltration path. Deployment is handled by Vercel's git integration, not a
+# token in CI.
+#
+# This workflow currently provides the build + typecheck gate (U1) and uploads
+# the built site so later gate jobs (links, a11y, content/fact, visual) can
+# reuse it. Those jobs are added by their own implementation units (U2, U4, U13).
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-typecheck:
+    name: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Typecheck (astro check)
+        run: npm run typecheck
+      - name: Build (astro build)
+        run: npm run build
+      - name: Upload built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
