@@ -1,0 +1,40 @@
+name: Smoke (post-deploy)
+
+# Runs the synthetic smoke test against a live deployment. Triggered by Vercel's
+# deployment_status (production) — or manually. This is the sole automatic
+# rollback trigger: if it fails on production, Auto-rollback (rollback.yml)
+# fires off this workflow's failure.
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL to smoke (defaults to production)"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: smoke
+    # Only on a successful production deployment, or a manual run.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Smoke test deployed site
+        run: npm run test:smoke
+        env:
+          CI: "true"
+          SMOKE_URL: ${{ github.event.deployment_status.target_url || github.event.inputs.url || 'https://tangerine-webpage.vercel.app' }}
