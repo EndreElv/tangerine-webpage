@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import Card from '../components/Card.astro';
 import { href } from '../data/nav.ts';
+import { STATS } from '../data/facts.ts';
 import { TG_PRINCIPLES, TG_TEAM } from '../data/content.ts';
 ---
 <BaseLayout title="About — Tangerine Central" description="Tangerine Central is a women-owned small business dedicated to advancing efficient, effective data collection and use in any setting — online or offline.">
@@ -35,7 +36,7 @@ import { TG_PRINCIPLES, TG_TEAM } from '../data/content.ts';
           <p class="tg-eyebrow">From paper to progress</p>
           <h2>The story of Tangerine</h2>
           <p>Tangerine was born out of first-hand experience collecting student data in low-resource and remote contexts. During a challenging early-grade reading assessment on an RTI International project, co-founders Carmen and Amber found themselves buried in paper forms, battling malfunctioning staplers, illegible copies, and missing data. The process was slow, outdated, and error-prone. They knew there had to be a better way.</p>
-          <p>That moment sparked Tangerine: a digital solution to improve data quality, streamline fieldwork, and enable real-time monitoring — no more waiting weeks to discover surprises in the data. What started in 2011 as a tool for early reading assessments has grown into a versatile, offline-first platform used in 65+ countries.</p>
+          <p>That moment sparked Tangerine: a digital solution to improve data quality, streamline fieldwork, and enable real-time monitoring — no more waiting weeks to discover surprises in the data. What started in 2011 as a tool for early reading assessments has grown into a versatile, offline-first platform used in {STATS.countries.value} countries.</p>
           <p>In 2025, Tangerine was brought under the management of Tangerine Central, led by Carmen and Amber — continuing to help governments and organizations unlock the power of data to improve lives.</p>
         </div>
         <blockquote class="mk-belief">

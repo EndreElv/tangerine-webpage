@@ -1,0 +1,44 @@
+name: Changelog
+
+# Plain-English "what shipped" on every merge to main (R17). Posts to the
+# Actions run summary always, and to a Slack channel when SLACK_WEBHOOK_URL is
+# configured (see docs/agent/pipeline-setup.md). The commit SHA is included so
+# a non-coder can request a rollback by reference. Posting into the originating
+# Linear issue is part of the deferred intake track.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Compose + post changelog entry
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          SUBJECT=$(git log -1 --format=%s)
+          SHA=$(git rev-parse --short HEAD)
+          {
+            echo "### 🍊 Shipped to production"
+            echo ""
+            echo "**$SUBJECT**"
+            echo ""
+            echo "- Commit: \`$SHA\`"
+            echo "- Roll back with: \`git revert $SHA\` (or Vercel Instant Rollback)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            payload=$(printf '{"text":":tangerine: Shipped to tangerine-webpage: *%s* (`%s`). Revert: git revert %s"}' "$SUBJECT" "$SHA" "$SHA")
+            curl -sf -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" \
+              || echo "changelog: Slack notify failed (non-blocking)"
+          else
+            echo "changelog: SLACK_WEBHOOK_URL not set — summary only (configure it to post to a channel)."
+          fi

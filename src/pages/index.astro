@@ -4,6 +4,7 @@ import Button from '../components/Button.astro';
 import Card from '../components/Card.astro';
 import Stat from '../components/Stat.astro';
 import { href } from '../data/nav.ts';
+import { STATS } from '../data/facts.ts';
 import { HOME_PRODUCTS, HOME_FEATURES, HOME_PARTNERS, HOME_STORIES } from '../data/home.ts';
 ---
 <BaseLayout>
@@ -58,9 +59,9 @@ import { HOME_PRODUCTS, HOME_FEATURES, HOME_PARTNERS, HOME_STORIES } from '../da
     <section class="mk-impact">
       <h2 class="mk-section__title" style="color:#fff">Tangerine&rsquo;s local and global impact</h2>
       <div class="mk-impact__row">
-        <Stat value="100+" label="languages" size="lg" />
-        <Stat value="60+" label="countries worldwide" size="lg" />
-        <Stat value="80+" label="organizations" size="lg" />
+        <Stat value={STATS.languages.value} label="languages" size="lg" />
+        <Stat value={STATS.countries.value} label="countries worldwide" size="lg" />
+        <Stat value={STATS.organizations.value} label="organizations" size="lg" />
       </div>
     </section>
 

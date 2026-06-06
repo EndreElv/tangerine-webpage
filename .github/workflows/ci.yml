@@ -1,0 +1,152 @@
+name: CI
+
+# Pre-merge gate chain for tangerine-webpage. Runs on every PR.
+# Gates are deterministic and OWNED outside the agent's autonomous path
+# (this file is CODEOWNER-protected). No deploy/monitoring secrets are exposed
+# to these jobs — they run PR-authored code, so secret access here would be an
+# exfiltration path. Deployment is handled by Vercel's git integration, not a
+# token in CI.
+#
+# This workflow currently provides the build + typecheck gate (U1) and uploads
+# the built site so later gate jobs (links, a11y, content/fact, visual) can
+# reuse it. Those jobs are added by their own implementation units (U2, U4, U13).
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-typecheck:
+    name: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Typecheck (astro check)
+        run: npm run typecheck
+      - name: Build (astro build)
+        run: npm run build
+      - name: Upload built site
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  content-gate:
+    name: content-gate
+    needs: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Download built site
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Content/fact gate (built HTML vs source-of-truth)
+        run: npm run test:content
+
+  browser-gates:
+    name: browser-gates
+    needs: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Download built site
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Accessibility + internal-link gates
+        run: npx playwright test tests/browser/a11y.spec.ts tests/browser/links.spec.ts
+
+  content-prose:
+    name: content-prose
+    needs: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download built site
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Vale (forbidden claims / brand / terminology)
+        uses: errata-ai/vale-action@reviewdog
+        with:
+          files: dist
+          fail_on_error: true
+          vale_flags: "--minAlertLevel=error"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  blast-radius:
+    name: blast-radius
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Blast-radius guard (Danger)
+        run: npx danger ci
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  visual:
+    name: visual
+    needs: build-and-typecheck
+    runs-on: ubuntu-latest
+    # Informational until Linux baselines are generated + committed (see
+    # docs/agent/pipeline-setup.md); then flip to a required check.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Download built site
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Visual regression
+        run: npx playwright test tests/browser/visual.spec.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-report
+          path: playwright-report/
+          retention-days: 7
