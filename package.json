@@ -10,6 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
+    "test:content": "tsx tests/content-truth.ts",
     "astro": "astro"
   },
   "engines": {
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }
 }

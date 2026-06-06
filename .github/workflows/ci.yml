@@ -43,3 +43,22 @@ jobs:
           name: dist
           path: dist/
           retention-days: 1
+
+  content-gate:
+    name: content-gate
+    needs: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Download built site
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Content/fact gate (built HTML vs source-of-truth)
+        run: npm run test:content
