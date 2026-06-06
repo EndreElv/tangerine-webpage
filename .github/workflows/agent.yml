@@ -1,0 +1,48 @@
+name: Linear agent task
+
+# SCAFFOLD — runs the coding agent on a Linear-originated task. Triggered by the
+# webhook bridge (api/linear-webhook.ts) via repository_dispatch. The agent
+# opens a PR that flows through the existing gate chain + auto-merge; it has no
+# special merge authority. Not active until AGENT_GH_TOKEN + ANTHROPIC_API_KEY
+# are set. Confirm the agent action name/inputs before enabling.
+
+on:
+  repository_dispatch:
+    types: [linear-agent-task]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Use the dedicated least-privilege agent App token (not the default
+          # GITHUB_TOKEN) so the PR it opens re-triggers the required checks.
+          token: ${{ secrets.AGENT_GH_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Run coding agent on the Linear request
+        # NOTE (scaffold): confirm the action ref + input names for your chosen
+        # agent. Swap this step if you prefer Linear's native agent instead.
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.AGENT_GH_TOKEN }}
+          prompt: |
+            A support/marketing teammate filed this request in Linear
+            (${{ github.event.client_payload.identifier }} —
+            ${{ github.event.client_payload.url }}):
+
+            Title: ${{ github.event.client_payload.title }}
+            Details: ${{ github.event.client_payload.description }}
+
+            Make the change on a new branch and open a pull request. Follow the
+            conventions in AGENTS.md (tokens, component prop enums, render facts
+            from src/data/facts.ts, links via href()). The PR body MUST include
+            "${{ github.event.client_payload.identifier }}" so Linear links the
+            issue. Do not touch gate/config files (CODEOWNER-protected).

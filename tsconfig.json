@@ -6,6 +6,7 @@
     "reference",
     "tests",
     "scripts",
+    "api",
     "dangerfile.ts",
     "playwright.config.ts",
     "playwright.smoke.config.ts"
