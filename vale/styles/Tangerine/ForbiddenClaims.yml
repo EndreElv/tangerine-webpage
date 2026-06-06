@@ -1,0 +1,13 @@
+extends: existence
+message: "Avoid the unverifiable marketing claim '%s' — it's a legal/brand risk."
+level: error
+ignorecase: true
+# Conservative list of claims an autonomous agent must never ship unreviewed.
+# Keep tight to avoid false positives on legitimate copy.
+tokens:
+  - we guarantee
+  - guaranteed to
+  - unbeatable
+  - world's best
+  - the best in the world
+  - 100% (?:accurate|secure|reliable)
