@@ -24,6 +24,10 @@ html { scroll-behavior: smooth; }
 .mk-form--sent .mk-form__view { display: none; }
 .mk-form--sent .mk-form__done { display: flex; }
 
+/* ---------- Breadcrumb links: underline so they're distinguishable from
+   surrounding muted text without relying on color (WCAG link-in-text-block). ---------- */
+.mk-breadcrumb a { text-decoration: underline; }
+
 /* ---------- Whole-card links (stories on Home, Help index) ---------- */
 .mk-card-link { display: block; text-decoration: none; color: inherit; }
 .mk-card-link:hover { text-decoration: none; }

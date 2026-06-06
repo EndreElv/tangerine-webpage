@@ -62,3 +62,24 @@ jobs:
           path: dist
       - name: Content/fact gate (built HTML vs source-of-truth)
         run: npm run test:content
+
+  browser-gates:
+    name: browser-gates
+    needs: build-and-typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Download built site
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Accessibility + internal-link gates
+        run: npx playwright test tests/browser/a11y.spec.ts tests/browser/links.spec.ts
