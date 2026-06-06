@@ -6,9 +6,8 @@ import { defineConfig } from 'astro/config';
 // off its CDN. Interactivity is small vanilla-JS islands inside .astro files,
 // so no UI-framework integration is needed.
 export default defineConfig({
-  // `site` is set after the first Vercel deploy gives us the production URL.
-  // It powers canonical URLs / sitemap; safe to fill in later.
-  // site: 'https://tangerine-webpage.vercel.app',
+  // Production URL — powers canonical URLs, OG tags, and sitemap.
+  site: 'https://tangerine-webpage.vercel.app',
   output: 'static',
   build: {
     format: 'directory',
