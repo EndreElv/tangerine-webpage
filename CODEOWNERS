@@ -1,0 +1,30 @@
+# Separation of duties (KTD1 / R18): the agent authors content freely, but a
+# human owns the gates, build/dependency config, the facts source-of-truth, and
+# the tests — so the agent cannot weaken its own gates on the autonomous path.
+# A PR touching any path below requires review from the owner before it can
+# merge, even when all checks are green. Pure content PRs (src/pages,
+# src/components, src/styles, src/data/content.ts, etc.) need no owner review.
+
+# Gate definitions, CI, and this ownership file
+/.github/                     @EndreElv
+/CODEOWNERS                   @EndreElv
+
+# Build + dependency + tooling config
+/astro.config.mjs             @EndreElv
+/package.json                 @EndreElv
+/package-lock.json            @EndreElv
+/tsconfig.json                @EndreElv
+/.nvmrc                       @EndreElv
+
+# Gate configs + scripts
+/.vale.ini                    @EndreElv
+/vale/                        @EndreElv
+/dangerfile.ts                @EndreElv
+/playwright.config.ts         @EndreElv
+/playwright.smoke.config.ts   @EndreElv
+/scripts/                     @EndreElv
+/tests/                       @EndreElv
+
+# Facts source-of-truth — changing a price/stat/claim value is a human decision.
+# (Page copy in src/data/content.ts is NOT owned — that's routine agent content.)
+/src/data/facts.ts            @EndreElv

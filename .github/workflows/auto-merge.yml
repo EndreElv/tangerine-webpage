@@ -1,0 +1,36 @@
+name: Auto-merge
+
+# Auto-merge-on-green controller (KTD2). Works around GitHub's 2026-03-25 change
+# that rejects enabling auto-merge before requirements are met (HTTP 422): we
+# only enable auto-merge AFTER a check suite completes successfully. GitHub then
+# merges the PR once the FULL required-check set is green (and any CODEOWNER
+# review is satisfied) — a single green suite does not merge on its own.
+#
+# Requires repo "Allow auto-merge" enabled and classic branch protection on main
+# with required status checks + 0 required reviewers (see docs/agent/pipeline-setup.md).
+
+on:
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    if: github.event.check_suite.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge on associated PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRS: ${{ toJSON(github.event.check_suite.pull_requests.*.number) }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "$PRS" | jq -r '.[]' | while read -r pr; do
+            [ -z "$pr" ] && continue
+            echo "Enabling auto-merge on PR #$pr (merges when all required checks pass)"
+            gh pr merge "$pr" --auto --squash -R "$REPO" \
+              || echo "PR #$pr: not yet eligible (checks still pending or CODEOWNER review required) — will re-evaluate on next suite"
+          done
