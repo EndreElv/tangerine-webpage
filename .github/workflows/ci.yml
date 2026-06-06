@@ -125,24 +125,19 @@ jobs:
     name: visual
     needs: build-and-typecheck
     runs-on: ubuntu-latest
-    # Informational until Linux baselines are generated + committed (see
-    # docs/agent/pipeline-setup.md); then flip to a required check.
-    continue-on-error: true
+    # Runs in the same pinned Playwright container the committed baselines were
+    # generated in (linux/amd64), so renders match and diffs are real signal.
+    container:
+      image: mcr.microsoft.com/playwright:v1.60.0-jammy
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
       - run: npm ci
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
       - name: Download built site
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
-      - name: Visual regression
+      - name: Visual regression (vs committed baselines)
         run: npx playwright test tests/browser/visual.spec.ts
       - uses: actions/upload-artifact@v4
         if: always()
