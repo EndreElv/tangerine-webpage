@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import Stat from '../components/Stat.astro';
 import { href } from '../data/nav.ts';
+import { STATS } from '../data/facts.ts';
 import { HOME_PARTNERS } from '../data/home.ts';
 ---
 <BaseLayout title="Impact — Tangerine" description="Tangerine has modernized reading and mathematics assessments in resource-constrained settings around the world.">
@@ -17,10 +18,10 @@ import { HOME_PARTNERS } from '../data/home.ts';
 
     <section class="mk-section">
       <div class="mk-impact-grid">
-        <Stat value="5M+" label="assessments & surveys conducted" gradient size="lg" />
-        <Stat value="65+" label="countries" gradient size="lg" />
-        <Stat value="80+" label="organizations & researchers" gradient size="lg" />
-        <Stat value="100+" label="languages" gradient size="lg" />
+        <Stat value={STATS.assessments.value} label="assessments & surveys conducted" gradient size="lg" />
+        <Stat value={STATS.countries.value} label="countries" gradient size="lg" />
+        <Stat value={STATS.organizations.value} label="organizations & researchers" gradient size="lg" />
+        <Stat value={STATS.languages.value} label="languages" gradient size="lg" />
       </div>
     </section>
 
@@ -29,7 +30,7 @@ import { HOME_PARTNERS } from '../data/home.ts';
         <img src="/assets/illustrations/global.png" alt="" class="mk-split__art" />
         <div>
           <h2>Modernizing assessment where it&rsquo;s needed most</h2>
-          <p>Over a decade of proven performance, millions of successful assessments, and deployment across 65+ countries have established Tangerine as a trusted standard for reliable, versatile data collection — and it is open-source.</p>
+          <p>Over a decade of proven performance, millions of successful assessments, and deployment across {STATS.countries.value} countries have established Tangerine as a trusted standard for reliable, versatile data collection — and it is open-source.</p>
           <p>Beyond academics, Tangerine facilitates non-cognitive assessments, inclusive education, and social-emotional learning. We&rsquo;re not just assessing knowledge; we&rsquo;re nurturing holistic development.</p>
           <Button as="a" href={href('user-stories')} variant="secondary">Read user stories</Button>
         </div>
