@@ -37,4 +37,7 @@ jobs:
         run: npm run test:smoke
         env:
           CI: "true"
-          SMOKE_URL: ${{ github.event.deployment_status.target_url || github.event.inputs.url || 'https://tangerine-webpage.vercel.app' }}
+          # Smoke the PUBLIC production alias. Vercel deployment-protection
+          # returns 401 on the per-deploy target_url, which would be a false
+          # failure (and trigger a needless rollback).
+          SMOKE_URL: ${{ github.event.inputs.url || 'https://tangerine-webpage.vercel.app' }}
