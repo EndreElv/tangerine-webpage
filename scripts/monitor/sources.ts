@@ -50,41 +50,87 @@ export async function syntheticErrors(): Promise<ErrorEvent[]> {
 }
 
 /**
- * Vercel runtime logs (best-effort secondary source).
+ * Vercel runtime logs (secondary source). Uses the documented per-deployment
+ * runtime-logs endpoint: resolve the current READY production deployment, then
+ * read its runtime logs and keep error/fatal level or HTTP >= 500.
  *
- * NOTE: Vercel's runtime-log API surface varies by plan/version. Validate this
- * endpoint against current Vercel docs before relying on it, or swap for a Log
- * Drain. Returns [] on any failure so a wrong endpoint can't break the loop.
+ * Validated against the live SignLab project — note a *static* site emits
+ * essentially no runtime logs (functions/edge only), so synthetic is the real
+ * signal; this just covers the case where functions/edge are added later.
+ * Bounded by a timeout and fails safe to [] so it can never stall the loop.
+ * Ref: https://vercel.com/docs/rest-api/logs/get-logs-for-a-deployment
  */
 export async function vercelErrors(): Promise<ErrorEvent[]> {
   const token = process.env.VERCEL_TOKEN;
   const projectId = process.env.VERCEL_PROJECT_ID;
   if (!token || !projectId) return [];
+  const auth = { Authorization: `Bearer ${token}` };
+  const teamQ = process.env.VERCEL_TEAM_ID ? `&teamId=${process.env.VERCEL_TEAM_ID}` : '';
 
-  const team = process.env.VERCEL_TEAM_ID ? `?teamId=${process.env.VERCEL_TEAM_ID}` : '';
-  const url = `https://api.vercel.com/v1/projects/${projectId}/logs${team}`; // TODO: verify against vercel.com/docs
   try {
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-    if (!res.ok) {
-      console.warn(`monitor: Vercel logs ${res.status} — skipping Vercel source.`);
+    // 1. Current production deployment.
+    const depRes = await fetch(
+      `https://api.vercel.com/v6/deployments?projectId=${projectId}&target=production&state=READY&limit=1${teamQ}`,
+      { headers: auth },
+    );
+    if (!depRes.ok) {
+      console.warn(`monitor: Vercel deployments ${depRes.status} — skipping Vercel source.`);
       return [];
     }
-    const data = (await res.json()) as Record<string, unknown>;
-    const rows = (Array.isArray(data) ? data : (data.logs ?? data.events ?? [])) as Array<
-      Record<string, unknown>
-    >;
+    const deploymentId = ((await depRes.json()) as { deployments?: { uid: string }[] }).deployments?.[0]?.uid;
+    if (!deploymentId) return [];
+
+    // 2. Runtime logs for that deployment (a stream — bound it with a timeout).
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+    let text: string;
+    try {
+      const logRes = await fetch(
+        `https://api.vercel.com/v1/projects/${projectId}/deployments/${deploymentId}/runtime-logs?teamId=${process.env.VERCEL_TEAM_ID ?? ''}`,
+        { headers: auth, signal: ctrl.signal },
+      );
+      if (!logRes.ok) {
+        console.warn(`monitor: Vercel runtime-logs ${logRes.status} — skipping Vercel source.`);
+        return [];
+      }
+      text = await logRes.text();
+    } finally {
+      clearTimeout(timer);
+    }
+
+    // NDJSON rows; documented fields: level, message, requestPath, responseStatusCode, ...
+    const rows = text
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((l) => {
+        try {
+          return JSON.parse(l) as Record<string, unknown>;
+        } catch {
+          return null;
+        }
+      })
+      .filter((r): r is Record<string, unknown> => r !== null);
+
     return rows
-      .filter((r) => /error|fatal/i.test(String(r.level ?? r.type ?? '')))
-      .map((r) => ({
-        source: 'vercel' as const,
-        type: `vercel_${String(r.level ?? r.type ?? 'error')}`,
-        message: String(r.message ?? r.text ?? ''),
-        route: (r.path ?? r.requestPath) as string | undefined,
-        raw: r,
-        occurredAt: r.timestamp as string | undefined,
-      }));
+      .filter((r) => ['error', 'fatal'].includes(String(r.level)) || Number(r.responseStatusCode) >= 500)
+      .map((r) => {
+        const status = Number(r.responseStatusCode);
+        return {
+          source: 'vercel' as const,
+          type: status >= 500 ? `http_${status}` : `vercel_${String(r.level)}`,
+          message: String(
+            r.message || `${r.requestMethod ?? ''} ${r.requestPath ?? ''} → ${r.responseStatusCode ?? ''}`,
+          ).trim(),
+          route: r.requestPath as string | undefined,
+          raw: r,
+          occurredAt: r.timestampInMs ? new Date(Number(r.timestampInMs)).toISOString() : undefined,
+        };
+      });
   } catch (e) {
-    console.warn('monitor: Vercel logs fetch failed —', (e as Error).message);
+    const err = e as Error;
+    if (err.name === 'AbortError') console.warn('monitor: Vercel runtime-logs timed out — skipping.');
+    else console.warn('monitor: Vercel logs failed —', err.message);
     return [];
   }
 }

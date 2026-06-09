@@ -98,24 +98,42 @@ global-breaker check → per-signature decide → act. **It no-ops unless
 `MONITOR_ENABLED=true` AND a Linear token is present** — so merging this does not
 activate anything until the human flips the switch.
 
-## Verified vs needs-validation
+## Verified
 
-- **Verified locally:** `signature` normalization/stability and the full `guard`
-  decision matrix (`tests/monitor-guard.ts`); the runner's no-op/dry-run path;
-  workflow YAML.
-- **Needs validation against live services (do before `MONITOR_ENABLED=true`):**
-  the Vercel log endpoint, the Linear GraphQL payloads/filters against the TAN
-  workspace, and Cursor's trigger mechanism.
+- **Locally:** `signature` normalization/stability and the full `guard` decision
+  matrix (`tests/monitor-guard.ts`); the runner's no-op/dry-run path; workflow YAML.
+- **Against live services (via MCP):**
+  - **Vercel** — corrected to the documented per-deployment runtime-logs endpoint
+    (`/v1/projects/{id}/deployments/{deploymentId}/runtime-logs`). Confirmed the
+    static site emits ~no runtime logs, so synthetic is the primary signal.
+  - **Linear** (TAN "Tangerine" team) — terminal status types are
+    `completed`/`canceled` (dedup filter is correct); existing `Bug` label reused;
+    `auto:prod-error` / `needs-human` are auto-created on first run.
+  - **Cursor trigger** — assigning the issue to the Cursor agent user.
+- **Still needs a live token to exercise end-to-end:** the actual issue-create /
+  Vercel-fetch calls (the script auths via tokens not held here). Do one
+  `workflow_dispatch` run after setting secrets, before arming.
 
 ## Activation (human-only)
 
-1. Enable Cursor's Linear + GitHub integration; confirm how an issue triggers it
-   (label vs assignee) and set `CURSOR_TRIGGER_LABEL` / `CURSOR_ASSIGNEE_ID`.
-2. Set secrets: `LINEAR_API_KEY`, `VERCEL_TOKEN`; vars: `LINEAR_TEAM_ID` (TAN),
-   `VERCEL_PROJECT_ID`, optional `MONITOR_URL` / `MONITOR_ROUTES`. Reuse
-   `SLACK_WEBHOOK_URL` for breaker alerts.
-3. Validate the Linear + Vercel calls (a dry hand-run), then set
-   `MONITOR_ENABLED=true`.
+Discovered values (non-secret) — set as repo **variables**:
+
+| Variable | Value |
+|---|---|
+| `LINEAR_TEAM_ID` | `7637221f-0bbe-42d2-80ab-d6a3ff7eb63f` (Tangerine / TAN) |
+| `CURSOR_ASSIGNEE_ID` | `bf8bc0ca-cd94-43b1-a2d7-63655e75e9c3` (Cursor agent) |
+| `VERCEL_PROJECT_ID` | `prj_INsPV0UVGwLL1V3fo0dSXJa3WE3A` |
+| `VERCEL_TEAM_ID` | `team_F9ty0MrGmM8j5jYr4fADYbGS` (SignLab) |
+| `MONITOR_URL` | `https://tangerine-webpage.vercel.app` |
+
+Steps:
+1. Set repo **secrets** `LINEAR_API_KEY`, `VERCEL_TOKEN` (reuse `SLACK_WEBHOOK_URL`
+   for breaker alerts), and the variables above.
+2. Confirm Cursor's GitHub app is installed, so an issue assigned to the Cursor
+   user opens a PR on this repo.
+3. Run the workflow manually (`workflow_dispatch`) once to exercise the live
+   Linear/Vercel calls end-to-end.
+4. Flip `MONITOR_ENABLED=true` to arm the loop.
 
 ## Deferred / parked
 

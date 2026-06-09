@@ -3,9 +3,10 @@
  * Cursor trigger. All auto-issues carry the `auto:prod-error` label and a
  * `[sig:<hash>]` title token (the dedup key).
  *
- * NOTE: these GraphQL shapes are written to spec. Validate them against the live
- * TAN workspace (team id, label names, the issueCreate/issues filter fields, and
- * the Cursor trigger) before flipping MONITOR_ENABLED=true.
+ * Validated against the live TAN ("Tangerine") workspace: terminal status types
+ * are completed/canceled (the dedup filter), the existing `Bug` label is reused,
+ * and the Cursor trigger is assignment to the Cursor agent user
+ * (CURSOR_ASSIGNEE_ID). Ids come from env (LINEAR_TEAM_ID etc.), never hardcoded.
  */
 import type { ErrorEvent } from './signature.ts';
 import { DEFAULT_GUARD } from './guard.ts';
@@ -14,7 +15,8 @@ const API = 'https://api.linear.app/graphql';
 const TEAM_ID = process.env.LINEAR_TEAM_ID || '';
 const AUTO_LABEL = process.env.MONITOR_LABEL || 'auto:prod-error';
 const NEEDS_HUMAN = 'needs-human';
-const CURSOR_LABEL = process.env.CURSOR_TRIGGER_LABEL || ''; // e.g. "Cursor"
+const BUG_LABEL = 'Bug'; // existing TAN convention for code-touching defects
+const CURSOR_LABEL = process.env.CURSOR_TRIGGER_LABEL || ''; // optional; trigger is normally the assignee
 const CURSOR_ASSIGNEE = process.env.CURSOR_ASSIGNEE_ID || '';
 
 async function gql<T>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
@@ -109,8 +111,8 @@ export async function recentAutoIssueCount(): Promise<number> {
 }
 
 export async function fileIssue(sig: string, group: ErrorEvent[]): Promise<void> {
-  const labelIds = [await labelId(AUTO_LABEL)];
-  if (CURSOR_LABEL) labelIds.push(await labelId(CURSOR_LABEL)); // Cursor trigger (label)
+  const labelIds = [await labelId(AUTO_LABEL), await labelId(BUG_LABEL)];
+  if (CURSOR_LABEL) labelIds.push(await labelId(CURSOR_LABEL)); // optional Cursor trigger (label)
   const input: Record<string, unknown> = {
     teamId: TEAM_ID,
     title: title(sig, group),
@@ -141,7 +143,7 @@ export async function bumpIssue(sig: string, group: ErrorEvent[]): Promise<void>
 }
 
 export async function escalate(sig: string, group: ErrorEvent[]): Promise<void> {
-  const labelIds = [await labelId(AUTO_LABEL), await labelId(NEEDS_HUMAN)].filter(Boolean);
+  const labelIds = [await labelId(AUTO_LABEL), await labelId(NEEDS_HUMAN), await labelId(BUG_LABEL)].filter(Boolean);
   const input = {
     teamId: TEAM_ID,
     title: `[sig:${sig}] RECURRING — needs human (${group[0].type})`,
