@@ -13,6 +13,8 @@
     "test:content": "tsx tests/content-truth.ts",
     "test:browser": "playwright test",
     "test:smoke": "playwright test -c playwright.smoke.config.ts",
+    "test:monitor": "tsx tests/monitor-guard.ts",
+    "monitor": "tsx scripts/monitor/run.ts",
     "danger": "danger ci",
     "astro": "astro"
   },
