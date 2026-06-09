@@ -25,3 +25,7 @@ pnpm-debug.log*
 # playwright
 test-results/
 playwright-report/
+
+# AI review runtime artifacts (generated in CI by ai-review.yml)
+ai-review-input.json
+ai-review-results.json
