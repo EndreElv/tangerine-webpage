@@ -1,0 +1,61 @@
+name: Monitor (prod)
+
+# Step 4 of the self-healing loop: watch production, and on a detected bug/crash
+# auto-file a Linear issue (which triggers Cursor to fix it). Runs on a schedule
+# and right after each production deploy. Runs on `main` (trusted), so the
+# Linear/Vercel tokens live here safely — this is NOT a pull_request job.
+#
+# Inert until armed: scripts/monitor/run.ts no-ops unless MONITOR_ENABLED=true
+# AND a Linear token + team are configured. See
+# docs/plans/2026-06-09-self-healing-prod-loop-design.md for activation.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  deployment_status:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    name: monitor
+    # Skipped entirely until armed (vars.MONITOR_ENABLED == 'true'), except a
+    # manual workflow_dispatch (for validation runs). On a deploy event, only run
+    # for a successful Production deployment. The script itself is a second
+    # safety: it no-ops without MONITOR_ENABLED + a Linear token.
+    if: >
+      (github.event_name == 'workflow_dispatch' || vars.MONITOR_ENABLED == 'true') &&
+      (github.event_name != 'deployment_status' ||
+       (github.event.deployment_status.state == 'success' &&
+        github.event.deployment_status.environment == 'Production'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium (synthetic source)
+        run: npx playwright install --with-deps chromium
+      - name: Run production monitor
+        env:
+          MONITOR_ENABLED: ${{ vars.MONITOR_ENABLED }}
+          MONITOR_URL: ${{ vars.MONITOR_URL }}
+          MONITOR_ROUTES: ${{ vars.MONITOR_ROUTES }}
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_ID: ${{ vars.LINEAR_TEAM_ID }}
+          CURSOR_TRIGGER_LABEL: ${{ vars.CURSOR_TRIGGER_LABEL }}
+          CURSOR_ASSIGNEE_ID: ${{ vars.CURSOR_ASSIGNEE_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ vars.VERCEL_TEAM_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DEPLOY_SHA: ${{ github.event.deployment_status.deployment.sha || github.sha }}
+        run: npm run monitor
