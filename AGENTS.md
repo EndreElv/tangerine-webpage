@@ -10,7 +10,7 @@ A static **Astro 5** marketing site (`output: 'static'`), deployed on **Vercel**
 Content is typed TS data; interactivity is tiny vanilla-JS islands in `.astro`
 `<script>` tags. No client UI framework.
 
-`project_tracker: github`
+`project_tracker: linear` — issues live in the **Tangerine (TAN)** team: https://linear.app/signlab/team/TAN
 
 ## Where things live
 
@@ -60,6 +60,21 @@ Open a PR. The gate chain (below) runs automatically; on all-green it auto-merge
 and deploys. No human approval is needed for ordinary content — **unless** your
 change touches a CODEOWNER path (gates, config, `facts.ts`, tests), which holds
 for human review by design.
+
+## Linking work to Linear
+
+Issues live in the **Tangerine (TAN)** team. Linking a PR to its issue needs the
+one-time GitHub ↔ Linear integration enabled in workspace settings
+([Settings → Integrations → GitHub](https://linear.app/signlab/settings/integrations/github)).
+Once it's on:
+
+- **Branch:** use the name Linear copies from the issue —
+  `endre/tan-12-short-slug`. Any branch containing the ID (`tan-12`,
+  case-insensitive) auto-links.
+- **PR:** put the ID in the title or description and use a magic word so the
+  issue closes on merge: `Fixes TAN-12` / `Closes TAN-12` / `Resolves TAN-12`.
+- On all-green the pipeline auto-merges, and the linked issue moves to **Done**
+  automatically — no manual status change.
 
 ## The gate chain (what CI checks on every PR)
 
