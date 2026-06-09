@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Input from '../components/Input.astro';
+import Checkbox from '../components/Checkbox.astro';
+import Badge from '../components/Badge.astro';
+import { localizedHref } from '../data/nav.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+import { getContent } from '../i18n/content/index.ts';
+
+interface Props { locale?: Locale }
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = PAGES[locale];
+const g = t.get;
+const { pricing } = getContent(locale);
+---
+<BaseLayout title={t.meta.getTitle} description={t.meta.getDesc} locale={locale}>
+  <main>
+    <div class="mk-breadcrumb"><a href={localizedHref('home', locale)}>{g.home}</a> &gt; <strong>{g.pricing}</strong></div>
+
+    <section class="mk-prod-hero">
+      <h1>{g.h1}</h1>
+      <p>{g.intro1}</p>
+      <p>{g.intro2}</p>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-pricing">
+        {pricing.map((tier, ti) => {
+          // The last tier ("Custom") is the only one that routes to contact;
+          // keying off position keeps this correct in every language.
+          const toContact = ti === pricing.length - 1;
+          return (
+            <div class:list={['mk-tier', { 'mk-tier--featured': tier.featured }]}>
+              {tier.featured && <div class="mk-tier__flag">{g.mostPopular}</div>}
+              <h3 class="mk-tier__name">{tier.name}</h3>
+              <div class="mk-tier__price">{tier.price}</div>
+              <div class="mk-tier__period">{tier.period || ' '}</div>
+              <ul class="mk-tier__list">
+                <li>{tier.results}</li>
+                <li>{tier.support}</li>
+                {tier.features.map((ft) => <li>{ft}</li>)}
+              </ul>
+              <Button
+                as="a"
+                href={toContact ? localizedHref('contact', locale) : '#trial-form'}
+                variant={tier.featured ? 'primary' : 'secondary'}
+                block
+              >{tier.cta}</Button>
+            </div>
+          );
+        })}
+      </div>
+      <p class="mk-pricing__note">{g.note}</p>
+
+      <div class="mk-benefits">
+        <h3>{g.includesTitle}</h3>
+        <ul>
+          {g.subBenefits.map((b) => <li>{b}</li>)}
+        </ul>
+        <p>{g.includesFoot}</p>
+      </div>
+    </section>
+
+    {/* Free trial */}
+    <section class="mk-section mk-section--soft" id="trial-form">
+      <div class="mk-trial__grid">
+        <div class="mk-trial__copy">
+          <p class="tg-eyebrow">{g.trialEyebrow}</p>
+          <h2 style="font-size:var(--text-3xl)">{g.trialTitle}</h2>
+          <p>{g.trialBody}</p>
+          <ul class="mk-trial__benefits">
+            {g.trialBenefits.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
+        <Card elevation="raised" padded={false}>
+          <div class="mk-form" id="trial-form-wrap" style="padding:var(--space-5)">
+            <form class="mk-form__view mk-trial__form" id="trial-form-el" novalidate>
+              <h3>{g.trialFormTitle}</h3>
+              <Input label={g.name} required placeholder={g.namePh} name="name" />
+              <Input label={g.email} type="email" required placeholder={g.emailPh} name="email" />
+              <Input label={g.org} placeholder={g.orgPh} name="org" />
+              <Input label={g.country} placeholder={g.countryPh} name="country" />
+              <Checkbox label={g.updates} name="updates" checked />
+              <Button type="submit" variant="primary" block>{g.requestTrial}</Button>
+            </form>
+            <div class="mk-form__done mk-trial__done">
+              <div class="mk-trial__check">&#10003;</div>
+              <h3>{g.trialDoneTitle}</h3>
+              <p>{g.trialDoneBody}</p>
+              <Button as="a" href={localizedHref('home', locale)} variant="secondary">{g.backHome}</Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </section>
+
+    {/* Host yourself */}
+    <section class="mk-section">
+      <Card elevation="raised" accentTop class="mk-selfhost">
+        <div>
+          <Badge tone="brand">{g.selfhostBadge}</Badge>
+          <h2>{g.selfhostTitle}</h2>
+          <p>{g.selfhostBody}</p>
+          <Button as="a" variant="secondary" href="https://github.com/Tangerine-Community/" target="_blank" rel="noopener">
+            {g.selfhostBtn}<span slot="icon-right">&#8599;</span>
+          </Button>
+        </div>
+        <div class="mk-selfhost__mark"><img src="/assets/product-icons/tangerine.png" alt="" /></div>
+      </Card>
+    </section>
+
+    <section class="mk-cta">
+      <h2>{g.ctaTitle}</h2>
+      <Button as="a" href="#trial-form" variant="accent" size="lg">{g.startTrial}</Button>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // Visual-only success state (no backend yet — flagged as a fast-follow).
+  const form = document.getElementById('trial-form-el');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('trial-form-wrap')?.classList.add('mk-form--sent');
+  });
+</script>

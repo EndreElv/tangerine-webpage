@@ -1,0 +1,33 @@
+/* ============================================================
+   Right-to-left overrides — apply only under <html dir="rtl"> (Arabic).
+   The base stylesheets use physical left/right properties; these mirror the
+   handful that don't auto-flip with `dir`.
+   ============================================================ */
+
+/* Mirror the directional hero photo so its composition faces into the page. */
+[dir='rtl'] .mk-hero__bg { transform: scaleX(-1); }
+
+/* Nav: push the link cluster to the visual left and flip dropdown anchoring. */
+[dir='rtl'] .mk-nav__links { margin-left: 0; margin-right: auto; }
+[dir='rtl'] .mk-nav__menu { left: auto; right: 0; }
+[dir='rtl'] .mk-nav__menu-link { text-align: right; }
+
+/* Marker lists: move the bullet/check/number to the right edge. */
+[dir='rtl'] .mk-suite__list li { padding-left: 0; padding-right: 22px; }
+[dir='rtl'] .mk-trial__benefits li { padding-left: 0; padding-right: 30px; }
+[dir='rtl'] .mk-tier__list li { padding-left: 0; padding-right: 20px; }
+[dir='rtl'] .mk-benefits li { padding-left: 0; padding-right: 28px; }
+[dir='rtl'] .mk-article__list li { padding-left: 0; padding-right: 26px; }
+[dir='rtl'] .mk-article__steps li { padding-left: 0; padding-right: 42px; }
+[dir='rtl'] .mk-suite__list li::before,
+[dir='rtl'] .mk-trial__benefits li::before,
+[dir='rtl'] .mk-tier__list li::before,
+[dir='rtl'] .mk-benefits li::before,
+[dir='rtl'] .mk-article__steps li::before,
+[dir='rtl'] .mk-article__list li::before { left: auto; right: 0; }
+
+/* Explicitly left-aligned text blocks → align to the right. */
+[dir='rtl'] .mk-suite__card .mk-link,
+[dir='rtl'] .mk-foot__link,
+[dir='rtl'] .mk-faqs__q,
+[dir='rtl'] .mk-member .tg-card__body { text-align: right; }

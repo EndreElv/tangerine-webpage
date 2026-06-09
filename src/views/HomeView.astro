@@ -1,0 +1,130 @@
+---
+// Locale-driven homepage body. English lives at /, and thin wrappers under
+// src/pages/{es,fr,ar}/index.astro render this same view in each language.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Stat from '../components/Stat.astro';
+import { localizedHref } from '../data/nav.ts';
+import { STATS } from '../data/facts.ts';
+import { HOME_PRODUCTS, HOME_FEATURES, HOME_PARTNERS, HOME_STORIES } from '../data/home.ts';
+import { arrowEnd, DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { UI } from '../i18n/ui.ts';
+
+interface Props {
+  locale?: Locale;
+}
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const ui = UI[locale];
+const h = ui.home;
+const arrow = arrowEnd(locale);
+
+const title = `Tangerine® — ${h.heroTitleA} ${h.heroTitleB}`;
+
+// Zip locale-independent assets/routes with translated copy by index/key.
+const products = HOME_PRODUCTS.map((p) => ({
+  icon: p.icon,
+  to: p.to,
+  name: ui.products[p.to as keyof typeof ui.products] ?? p.name,
+  points: h.productPoints[p.to as keyof typeof h.productPoints] ?? p.points,
+}));
+const features = HOME_FEATURES.map((f, i) => ({ img: f.img, ...(h.features[i] ?? { title: f.title, body: f.body }) }));
+const stories = HOME_STORIES.map((s, i) => ({ tag: s.tag, title: h.stories[i] ?? s.title }));
+---
+<BaseLayout title={title} description={h.heroBody} locale={locale}>
+  <main>
+    {/* Hero */}
+    <section class="mk-hero">
+      <img class="mk-hero__bg" src="/assets/imagery/hero-overlay.png" alt="" />
+      <div class="mk-hero__scrim"></div>
+      <div class="mk-hero__content">
+        <h1>{h.heroTitleA}<br />{h.heroTitleB}</h1>
+        <p class="mk-hero__sub">{h.heroSub}</p>
+        <p class="mk-hero__body">{h.heroBody}</p>
+        <Button as="a" href={localizedHref('trial', locale)} variant="primary" size="lg">{ui.nav.getTangerine}</Button>
+      </div>
+    </section>
+
+    {/* Product suite */}
+    <section class="mk-section">
+      <p class="tg-eyebrow" style="text-align:center">{h.suiteEyebrow}</p>
+      <h2 class="mk-section__title">{h.suiteTitle}</h2>
+      <div class="mk-suite">
+        {products.map((p) => (
+          <Card elevation="raised" accentTop class="mk-suite__card">
+            <img class="mk-suite__icon" src={p.icon} alt="" />
+            <h3>{p.name}</h3>
+            <ul class="mk-suite__list">
+              {p.points.map((pt) => <li>{pt}</li>)}
+            </ul>
+            <a class="mk-link" href={localizedHref(p.to, locale)}>{h.explore} {p.name} {arrow}</a>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    {/* Feature trio */}
+    <section class="mk-section mk-section--soft">
+      <div class="mk-features">
+        {features.map((f) => (
+          <div class="mk-feature">
+            <img src={f.img} alt="" />
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Impact stats */}
+    <section class="mk-impact">
+      <h2 class="mk-section__title" style="color:#fff">{h.impactTitle}</h2>
+      <div class="mk-impact__row">
+        <Stat value={STATS.languages.value} label={h.statLanguages} size="lg" />
+        <Stat value={STATS.countries.value} label={h.statCountries} size="lg" />
+        <Stat value={STATS.organizations.value} label={h.statOrganizations} size="lg" />
+      </div>
+    </section>
+
+    {/* User stories */}
+    <section class="mk-section">
+      <p class="tg-eyebrow" style="text-align:center">{h.storiesEyebrow}</p>
+      <h2 class="mk-section__title">{h.storiesTitle}</h2>
+      <div class="mk-stories">
+        {stories.map((s) => (
+          <a class="mk-story-link" href={localizedHref('user-stories', locale)}>
+            <Card interactive elevation="raised" class="mk-story">
+              <span class="mk-story__tag">{s.tag}</span>
+              <h3>{s.title}</h3>
+              <span class="mk-link">{h.continueReading} {arrow}</span>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {/* Community */}
+    <section class="mk-section mk-section--soft">
+      <h2 class="mk-section__title">{h.communityTitle}</h2>
+      <div class="mk-partners">
+        {HOME_PARTNERS.map((p) => (
+          <div class="mk-partners__item">
+            <img src={`/assets/partners/${p}.png`} alt={p} />
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* CTA */}
+    <section class="mk-cta">
+      <h2>{h.ctaTitle}</h2>
+      <p>{h.ctaSub}</p>
+      <Button as="a" href={localizedHref('trial', locale)} variant="accent" size="lg">{ui.nav.getStarted}</Button>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .mk-story-link { display: block; text-decoration: none; color: inherit; }
+  .mk-story-link:hover { text-decoration: none; }
+</style>

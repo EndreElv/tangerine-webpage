@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import { localizedHref } from '../data/nav.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+import { getContent } from '../i18n/content/index.ts';
+
+interface Props { locale?: Locale }
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = PAGES[locale];
+const h = t.help;
+const entries = Object.entries(getContent(locale).help);
+---
+<BaseLayout title={t.meta.helpTitle} description={t.meta.helpDesc} locale={locale}>
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">{h.eyebrow}</p>
+        <h1>{h.h1}</h1>
+        <p>{h.sub}</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-help-grid">
+        {entries.map(([slug, art]) => (
+          <a class="mk-card-link" href={localizedHref('help/' + slug, locale)}>
+            <Card interactive elevation="raised" class="mk-help">
+              <h3>{art.title}</h3>
+              <p>{art.summary}</p>
+              <span class="mk-link">{h.learnMore} &rarr;</span>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="mk-cta">
+      <h2>{h.ctaTitle}</h2>
+      <p>{h.ctaSub}</p>
+      <Button as="a" href={localizedHref('contact', locale)} variant="primary" size="lg">{h.contactSupport}</Button>
+    </section>
+  </main>
+</BaseLayout>

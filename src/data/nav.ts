@@ -22,6 +22,13 @@ export function href(to: string): string {
   return ROUTES[to] ?? '/';
 }
 
+import { localizePath, type Locale } from '../i18n/index.ts';
+
+/** Locale-aware variant of {@link href}: resolves the key, then prefixes the locale. */
+export function localizedHref(to: string, locale: Locale): string {
+  return localizePath(href(to), locale);
+}
+
 export interface NavItem {
   label: string;
   to?: string;

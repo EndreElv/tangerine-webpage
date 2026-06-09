@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Input from '../components/Input.astro';
+import { localizedHref } from '../data/nav.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+
+interface Props { locale?: Locale }
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = PAGES[locale];
+const c = t.contact;
+
+const SOCIALS = [
+  { label: 'YouTube', href: 'https://www.youtube.com/channel/UC8U-vN0_ezdCjGfT34sxBlQ' },
+  { label: 'Twitter / X', href: 'http://twitter.com/TangerineTool' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/tangerine-central' },
+];
+---
+<BaseLayout title={t.meta.contactTitle} description={t.meta.contactDesc} locale={locale}>
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">{c.eyebrow}</p>
+        <h1>{c.h1}</h1>
+        <p>{c.sub}</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-contact">
+        <Card elevation="raised" padded={false}>
+          <div class="mk-form" id="contact-form-wrap" style="padding:var(--space-5)">
+            <form class="mk-form__view mk-contact__form" id="contact-form" novalidate>
+              <h3>{c.formTitle}</h3>
+              <Input label={c.name} required placeholder={c.namePh} name="name" />
+              <Input label={c.email} type="email" required placeholder={c.emailPh} name="email" />
+              <Input label={c.org} placeholder={c.orgPh} name="org" />
+              <label class="mk-textarea">
+                <span>{c.message}</span>
+                <textarea rows="4" name="message" placeholder={c.messagePh}></textarea>
+              </label>
+              <Button type="submit" variant="primary" block>{c.send}</Button>
+            </form>
+            <div class="mk-form__done mk-trial__done">
+              <div class="mk-trial__check">&#10003;</div>
+              <h3>{c.doneTitle}</h3>
+              <p>{c.doneBody}</p>
+              <Button as="a" href={localizedHref('home', locale)} variant="secondary">{t.common.backHome}</Button>
+            </div>
+          </div>
+        </Card>
+
+        <aside class="mk-contact__aside">
+          <h3>{c.asideTitle}</h3>
+          <p>{c.asideBody}</p>
+          <Button as="a" href={localizedHref('trial', locale)} variant="accent">{c.getTangerine}</Button>
+          <div class="mk-contact__socials">
+            <h4>{c.followTitle}</h4>
+            {SOCIALS.map((s) => (
+              <a href={s.href} target="_blank" rel="noopener" class="mk-contact__social">{s.label} &rarr;</a>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  // Visual-only success state (no backend yet — flagged as a fast-follow).
+  const form = document.getElementById('contact-form');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('contact-form-wrap')?.classList.add('mk-form--sent');
+  });
+</script>

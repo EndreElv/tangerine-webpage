@@ -1,10 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Button from '../../components/Button.astro';
-import { href } from '../../data/nav.ts';
+import HelpArticleView from '../../views/HelpArticleView.astro';
 import { TG_HELP } from '../../data/content.ts';
 
-// One static article per help entry. Ported from Support.jsx → HelpArticlePage.
+// One static article per help entry, in English.
 export function getStaticPaths() {
   const slugs = Object.keys(TG_HELP);
   return slugs.map((slug, idx) => ({
@@ -16,47 +14,6 @@ export function getStaticPaths() {
     },
   }));
 }
-const { art, next, nextTitle } = Astro.props as { art: any; next: string; nextTitle: string };
+const { art, next, nextTitle } = Astro.props as any;
 ---
-<BaseLayout title={`${art.title} — Tangerine Help`} description={art.summary}>
-  <main>
-    <div class="mk-breadcrumb">
-      <a href={href('home')}>HOME</a> &gt; <a href={href('help')}>HELP</a> &gt; <strong>{art.title.toUpperCase()}</strong>
-    </div>
-
-    <article class="mk-article">
-      <p class="tg-eyebrow">Help</p>
-      <h1>{art.title}</h1>
-      <p class="mk-article__intro">{art.intro}</p>
-
-      {art.sections.map((s: any) => (
-        <section class="mk-article__sec">
-          <h2>{s.h}</h2>
-          {s.p && s.p.map((para: string) => <p>{para}</p>)}
-          {s.steps && <ol class="mk-article__steps">{s.steps.map((t: string) => <li>{t}</li>)}</ol>}
-          {s.list && <ul class="mk-article__list">{s.list.map((t: string) => <li>{t}</li>)}</ul>}
-          {s.link && (
-            <Button as="a" variant="secondary" href={s.link.href} target="_blank" rel="noopener">
-              {s.link.label}<span slot="icon-right">&#8599;</span>
-            </Button>
-          )}
-        </section>
-      ))}
-
-      <div class="mk-article__foot">
-        <Button as="a" variant="ghost" href={href('help')}>
-          <span slot="icon-left">&larr;</span>All help topics
-        </Button>
-        <Button as="a" variant="secondary" href={href('help/' + next)}>
-          Next: {nextTitle}<span slot="icon-right">&rarr;</span>
-        </Button>
-      </div>
-    </article>
-
-    <section class="mk-cta">
-      <h2>Still stuck?</h2>
-      <p>Our team is happy to help with setup, customization, and rollout.</p>
-      <Button as="a" href={href('contact')} variant="primary" size="lg">Contact support</Button>
-    </section>
-  </main>
-</BaseLayout>
+<HelpArticleView locale="en" art={art} next={next} nextTitle={nextTitle} />

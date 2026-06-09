@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
+import { localizedHref } from '../data/nav.ts';
+import { arrowEnd, DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+import { getContent } from '../i18n/content/index.ts';
+
+interface Props { locale?: Locale }
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = PAGES[locale];
+const s = t.stories;
+const { stories } = getContent(locale);
+const arrow = arrowEnd(locale);
+---
+<BaseLayout title={t.meta.storiesTitle} description={t.meta.storiesDesc} locale={locale}>
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">{s.eyebrow}</p>
+        <h1>{s.h1}</h1>
+        <p>{s.sub}</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-stories">
+        {stories.map((story) => (
+          <Card interactive elevation="raised" class="mk-story">
+            <Badge tone="brand">{story.org}</Badge>
+            <h3>{story.title}</h3>
+            <p>{story.body}</p>
+            <span class="mk-story__tag">{story.tag}</span>
+            <span class="mk-link">{s.continueReading} {arrow}</span>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mk-cta">
+      <h2>{s.ctaTitle}</h2>
+      <p>{s.ctaSub}</p>
+      <Button as="a" href={localizedHref('contact', locale)} variant="primary" size="lg">{s.getInTouch}</Button>
+    </section>
+  </main>
+</BaseLayout>

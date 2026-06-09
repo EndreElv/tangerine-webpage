@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import { localizedHref } from '../data/nav.ts';
+import { STATS } from '../data/facts.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+import { getContent } from '../i18n/content/index.ts';
+
+interface Props { locale?: Locale }
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = PAGES[locale];
+const a = t.about;
+const { principles, team } = getContent(locale);
+const story2 = a.story2.replace('{n}', STATS.countries.value);
+---
+<BaseLayout title={t.meta.aboutTitle} description={t.meta.aboutDesc} locale={locale}>
+  <main>
+    <section class="mk-page-hero">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow">{a.eyebrow}</p>
+        <h1>{a.h1}</h1>
+        <p>{a.intro}</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-principles">
+        {principles.map((p) => (
+          <Card elevation="raised" accentTop class="mk-principle">
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </Card>
+        ))}
+      </div>
+      <p class="mk-section__lead" style="margin-top:var(--space-7)">{a.teamLead}</p>
+    </section>
+
+    <section class="mk-section mk-section--soft">
+      <div class="mk-story-feature">
+        <div>
+          <p class="tg-eyebrow">{a.storyEyebrow}</p>
+          <h2>{a.storyTitle}</h2>
+          <p>{a.story1}</p>
+          <p>{story2}</p>
+          <p>{a.story3}</p>
+        </div>
+        <blockquote class="mk-belief">
+          <span class="tg-eyebrow">{a.beliefEyebrow}</span>
+          <p>{a.beliefText}</p>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <p class="tg-eyebrow" style="text-align:center">{a.teamEyebrow}</p>
+      <h2 class="mk-section__title">{a.teamTitle}</h2>
+      <div class="mk-team">
+        {team.map((m) => (
+          <Card elevation="raised" class="mk-member">
+            <img class="mk-member__photo" src={m.photo} alt={m.name} />
+            <h3>{m.name}</h3>
+            <p class="mk-member__role">{m.role}</p>
+            <p class="mk-member__bio">{m.bio}</p>
+            <a class="mk-link" href={m.linkedin} target="_blank" rel="noopener">{a.connectLinkedIn} &rarr;</a>
+          </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mk-section mk-section--soft">
+      <Card elevation="raised" accentTop class="mk-podcast">
+        <div>
+          <p class="tg-eyebrow">{a.podcastEyebrow}</p>
+          <h2>{a.podcastTitle}</h2>
+          <p>{a.podcastBody}</p>
+          <Button as="a" variant="secondary" href="https://bold.expert/ai-edtech-in-low-resource-settings/" target="_blank" rel="noopener">{a.podcastBtn}</Button>
+        </div>
+        <div class="mk-podcast__mark"><img src="/assets/product-icons/tangerine.png" alt="" /></div>
+      </Card>
+    </section>
+
+    <section class="mk-cta">
+      <h2>{t.common.readyTitle}</h2>
+      <Button as="a" href={localizedHref('trial', locale)} variant="accent" size="lg">{t.common.getStarted}</Button>
+    </section>
+  </main>
+</BaseLayout>

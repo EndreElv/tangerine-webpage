@@ -1,26 +1,65 @@
 ---
 // Site footer. Ported from ui_kits/marketing-site/Footer.jsx — links are now
-// real anchors via the central route map.
-import { href, FOOTER_COLS } from '../data/nav.ts';
+// real anchors via the central route map, and labels are locale-aware.
+import { localizedHref } from '../data/nav.ts';
 import { STATS } from '../data/facts.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { UI } from '../i18n/ui.ts';
+
+interface Props {
+  locale?: Locale;
+}
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const ui = UI[locale];
+
+const cols: { title: string; links: [string, string][] }[] = [
+  {
+    title: ui.nav.products,
+    links: [
+      [ui.products['p-tangerine'], 'p-tangerine'],
+      [ui.products['p-teach'], 'p-teach'],
+      [ui.products['p-coach'], 'p-coach'],
+      [ui.products['p-acuity'], 'p-acuity'],
+    ],
+  },
+  {
+    title: ui.nav.resources,
+    links: [
+      [ui.nav.userStories, 'user-stories'],
+      [ui.nav.impact, 'impact'],
+      [ui.nav.faqs, 'faqs'],
+      [ui.nav.getTangerine, 'trial'],
+    ],
+  },
+  {
+    title: ui.nav.support,
+    links: [
+      [ui.nav.help, 'help'],
+      [ui.nav.contact, 'contact'],
+      [ui.nav.about, 'about'],
+    ],
+  },
+];
+
+const tagline = ui.footer.tagline.replace('{n}', STATS.countries.value);
 ---
 <footer class="mk-foot">
   <div class="mk-foot__inner">
     <div class="mk-foot__brand">
       <img src="/assets/logos/tangerine-logo.png" alt="Tangerine" />
-      <p>Open-source, offline-first data collection for education — deployed in {STATS.countries.value} countries.</p>
+      <p>{tagline}</p>
     </div>
-    {FOOTER_COLS.map((col) => (
+    {cols.map((col) => (
       <div class="mk-foot__col">
         <h4>{col.title}</h4>
         {col.links.map(([label, to]) => (
-          <a class="mk-foot__link" href={href(to)}>{label}</a>
+          <a class="mk-foot__link" href={localizedHref(to, locale)}>{label}</a>
         ))}
       </div>
     ))}
   </div>
   <div class="mk-foot__bar">
-    <span>©2025 Tangerine Central, LLC. All Rights Reserved.</span>
-    <span>The Tangerine Logo is a registered trademark of Research Triangle Institute.</span>
+    <span>{ui.footer.rights}</span>
+    <span>{ui.footer.trademark}</span>
   </div>
 </footer>

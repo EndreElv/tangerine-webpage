@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Badge from '../components/Badge.astro';
+import { localizedHref } from '../data/nav.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+
+interface Props {
+  locale?: Locale;
+  product: any;
+}
+const { locale = DEFAULT_LOCALE, product: p } = Astro.props;
+const t = PAGES[locale];
+---
+<BaseLayout title={`${p.name} — Tangerine`} description={p.lead?.[0]} locale={locale}>
+  <main>
+    <div class="mk-breadcrumb">
+      <a href={localizedHref('home', locale)}>{t.common.home}</a> &gt; {t.common.products} &gt; <strong>{p.crumb}</strong>
+    </div>
+
+    <section class:list={['mk-prod-hero', { 'mk-prod-hero--tall': p.logoTall }]}>
+      <img class="mk-prod-hero__logo" src={p.logo} alt={p.name} />
+      <h1>{p.name}</h1>
+      {p.badge && <div class="mk-prod-hero__badge"><Badge tone="accent" solid>{p.badge}</Badge></div>}
+      {p.lead.map((text: string) => <p>{text}</p>)}
+    </section>
+
+    {p.blocks.map((block: any, i: number) => (
+      <section class:list={['mk-section', { 'mk-section--soft': i % 2 === 0 }]}>
+        {block.type === 'feature' && block.wide && (
+          <div class="mk-wide-block">
+            {block.eyebrow && <p class="tg-eyebrow" style="text-align:center">{block.eyebrow}</p>}
+            <h2 class="mk-section__title">{block.heading}</h2>
+            {block.body && block.body.map((para: string) => <p class="mk-section__lead">{para}</p>)}
+            <Card elevation="raised" padded={false} class="mk-report">
+              <img src={block.image} alt={block.heading} />
+            </Card>
+          </div>
+        )}
+        {block.type === 'feature' && !block.wide && (
+          <div class:list={['mk-feature-row', { 'mk-feature-row--rev': block.reverse }]}>
+            <div class="mk-feature-row__text">
+              {block.eyebrow && <p class="tg-eyebrow">{block.eyebrow}</p>}
+              <h2>{block.heading}</h2>
+              {block.body.map((para: string) => <p>{para}</p>)}
+              {block.cta && (
+                <Button as="a" href={localizedHref(block.cta.to, locale)} variant="primary">{block.cta.label}</Button>
+              )}
+            </div>
+            <figure class="mk-feature-row__media">
+              <Card elevation="raised" padded={false}>
+                <img src={block.image} alt={block.heading} />
+              </Card>
+              {block.caption && <figcaption>{block.caption}</figcaption>}
+            </figure>
+          </div>
+        )}
+        {block.type === 'modules' && (
+          <div class="mk-modules">
+            {block.cards.map((m: any) => (
+              <Card elevation="raised" media={m.img} mediaAlt={m.title} class="mk-module">
+                <h3>{m.title}</h3>
+                <p>{m.body}</p>
+              </Card>
+            ))}
+          </div>
+        )}
+        {block.type === 'video' && (
+          <div class="mk-video">
+            <h2 class="mk-section__title">{block.heading}</h2>
+            <div class="mk-video__frame">
+              <iframe
+                src={`https://www.youtube.com/embed/${block.id}`}
+                title={block.heading}
+                loading="lazy"
+                frameborder="0"
+                allowfullscreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              ></iframe>
+            </div>
+          </div>
+        )}
+      </section>
+    ))}
+
+    <section class="mk-cta">
+      <h2>{p.cta.heading}</h2>
+      <Button as="a" href={localizedHref(p.cta.to, locale)} variant="accent" size="lg">{p.cta.label}</Button>
+    </section>
+  </main>
+</BaseLayout>

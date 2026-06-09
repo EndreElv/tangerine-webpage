@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { localizedHref } from '../data/nav.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+
+interface Props { locale?: Locale; art: any; next: string; nextTitle: string }
+const { locale = DEFAULT_LOCALE, art, next, nextTitle } = Astro.props;
+const t = PAGES[locale];
+const ha = t.helpArticle;
+---
+<BaseLayout title={`${art.title} — Tangerine`} description={art.summary} locale={locale}>
+  <main>
+    <div class="mk-breadcrumb">
+      <a href={localizedHref('home', locale)}>{ha.home}</a> &gt; <a href={localizedHref('help', locale)}>{ha.help}</a> &gt; <strong>{art.title.toUpperCase()}</strong>
+    </div>
+
+    <article class="mk-article">
+      <p class="tg-eyebrow">{ha.eyebrow}</p>
+      <h1>{art.title}</h1>
+      <p class="mk-article__intro">{art.intro}</p>
+
+      {art.sections.map((s: any) => (
+        <section class="mk-article__sec">
+          <h2>{s.h}</h2>
+          {s.p && s.p.map((para: string) => <p>{para}</p>)}
+          {s.steps && <ol class="mk-article__steps">{s.steps.map((x: string) => <li>{x}</li>)}</ol>}
+          {s.list && <ul class="mk-article__list">{s.list.map((x: string) => <li>{x}</li>)}</ul>}
+          {s.link && (
+            <Button as="a" variant="secondary" href={s.link.href} target="_blank" rel="noopener">
+              {s.link.label}<span slot="icon-right">&#8599;</span>
+            </Button>
+          )}
+        </section>
+      ))}
+
+      <div class="mk-article__foot">
+        <Button as="a" variant="ghost" href={localizedHref('help', locale)}>
+          <span slot="icon-left">&larr;</span>{ha.allTopics}
+        </Button>
+        <Button as="a" variant="secondary" href={localizedHref('help/' + next, locale)}>
+          {ha.next} {nextTitle}<span slot="icon-right">&rarr;</span>
+        </Button>
+      </div>
+    </article>
+
+    <section class="mk-cta">
+      <h2>{ha.ctaTitle}</h2>
+      <p>{ha.ctaSub}</p>
+      <Button as="a" href={localizedHref('contact', locale)} variant="primary" size="lg">{ha.contactSupport}</Button>
+    </section>
+  </main>
+</BaseLayout>

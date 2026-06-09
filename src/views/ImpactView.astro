@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Stat from '../components/Stat.astro';
+import { localizedHref } from '../data/nav.ts';
+import { STATS } from '../data/facts.ts';
+import { HOME_PARTNERS } from '../data/home.ts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
+import { PAGES } from '../i18n/pages.ts';
+
+interface Props { locale?: Locale }
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = PAGES[locale];
+const im = t.impact;
+const split1 = im.split1.replace('{n}', STATS.countries.value);
+---
+<BaseLayout title={t.meta.impactTitle} description={t.meta.impactDesc} locale={locale}>
+  <main>
+    <section class="mk-page-hero mk-page-hero--brand">
+      <div class="mk-page-hero__inner">
+        <p class="tg-eyebrow" style="color:var(--gold-300)">{im.eyebrow}</p>
+        <h1>{im.h1}</h1>
+        <p>{im.sub}</p>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <div class="mk-impact-grid">
+        <Stat value={STATS.assessments.value} label={im.statAssessments} gradient size="lg" />
+        <Stat value={STATS.countries.value} label={im.statCountries} gradient size="lg" />
+        <Stat value={STATS.organizations.value} label={im.statOrganizations} gradient size="lg" />
+        <Stat value={STATS.languages.value} label={im.statLanguages} gradient size="lg" />
+      </div>
+    </section>
+
+    <section class="mk-section mk-section--soft">
+      <div class="mk-split">
+        <img src="/assets/illustrations/global.png" alt="" class="mk-split__art" />
+        <div>
+          <h2>{im.splitTitle}</h2>
+          <p>{split1}</p>
+          <p>{im.split2}</p>
+          <Button as="a" href={localizedHref('user-stories', locale)} variant="secondary">{im.readStories}</Button>
+        </div>
+      </div>
+    </section>
+
+    <section class="mk-section">
+      <h2 class="mk-section__title">{im.trustedTitle}</h2>
+      <div class="mk-partners">
+        {HOME_PARTNERS.map((p) => (
+          <div class="mk-partners__item"><img src={`/assets/partners/${p}.png`} alt={p} /></div>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
