@@ -1,0 +1,53 @@
+name: Agent-doc sync
+
+# docs-on-ship: after a change ships to main, check whether it makes the
+# agent-facing docs (AGENTS.md, docs/agent/**) inaccurate and, if so, open a
+# follow-up PR that updates them. Runs on trusted `main`, so ANTHROPIC_API_KEY
+# lives here safely. The guard skips doc-only/revert/bot commits so a sync PR
+# can't retrigger sync.
+#
+# Inert until armed: the job is skipped unless vars.DOCS_SYNC_ENABLED == 'true'
+# (workflow_dispatch always allowed), and run.ts no-ops without a token.
+#
+# PR-trigger note: set a bot PAT as secret DOCS_BOT_TOKEN so the docs PR triggers
+# the gate chain + auto-merge. PRs opened with the default GITHUB_TOKEN do NOT
+# trigger other workflows, so without a PAT the docs PR won't run CI / auto-merge.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: agent-docs-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: sync
+    if: github.event_name == 'workflow_dispatch' || vars.DOCS_SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history — run.ts diffs the shipped commit range
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Sync agent docs
+        env:
+          DOCS_SYNC_ENABLED: ${{ vars.DOCS_SYNC_ENABLED }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DOCS_SYNC_MODEL: ${{ vars.AI_REVIEW_MODEL || 'claude-opus-4-8' }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+          # Prefer a bot PAT so the docs PR triggers CI + auto-merge; fall back to
+          # GITHUB_TOKEN (PR opens but won't trigger workflows).
+          GH_TOKEN: ${{ secrets.DOCS_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: npm run docs:sync
