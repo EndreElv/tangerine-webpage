@@ -63,6 +63,25 @@ jobs:
       - name: Content/fact gate (built HTML vs source-of-truth)
         run: npm run test:content
 
+  language-coverage:
+    name: language-coverage
+    # Deterministic en/es/ar parity gate. Reads src/data/i18n source (not the
+    # build), needs no secrets, so it lives here in the untrusted PR workflow
+    # alongside the other deterministic gates. ARMED no-op until locale files
+    # exist; blocks the moment a translation is missing or empty. The AI
+    # reviewers (SEO, code quality, brand voice) live in ai-review.yml instead,
+    # because they need an API key that must never reach PR-authored code.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Language coverage gate (en/es/ar parity)
+        run: npm run test:i18n
+
   browser-gates:
     name: browser-gates
     needs: build-and-typecheck

@@ -21,8 +21,11 @@ rulesets/auto-merge incompatibility).
 - Settings → Branches → add rule for `main`:
   - Require a pull request before merging; **Required approvals: 0**.
   - **Require status checks to pass** — add these exact job names:
-    `build-and-typecheck`, `content-gate`, `browser-gates`, `content-prose`,
-    `blast-radius`. (Leave `visual` out until baselines exist — see §4.)
+    `build-and-typecheck`, `content-gate`, `language-coverage`, `browser-gates`,
+    `content-prose`, `blast-radius`. (Leave `visual` out until baselines exist —
+    see §4.) The `ai-review: *` checks launch ADVISORY — keep them out of the
+    required set until calibrated (see
+    docs/plans/2026-06-09-agentic-review-gates-design.md §4).
   - Require review from **Code Owners** (so CODEOWNER-path PRs need approval).
   - Require branches up to date before merging (serializes merges).
   - Block force pushes and deletions.
@@ -59,6 +62,10 @@ Then remove `continue-on-error: true` from the `visual` job and add `visual` to
 the required checks in §1.
 
 ## 5. Secrets
+- `ANTHROPIC_API_KEY` (required for AI review) — consumed ONLY by `ai-review.yml`
+  (a `workflow_run` job that never executes PR code). Never add it to `ci.yml`.
+  Optional repo *variables* `AI_REVIEW_MODEL` (default `claude-opus-4-8`) and
+  `AI_REVIEW_EFFORT` (default `high`; `none` for Haiku) tune the reviewer.
 - `SLACK_WEBHOOK_URL` (optional) — changelog/rollback notices to a channel.
 - No `VERCEL_TOKEN` is needed for normal operation (deploy is Vercel's git
   integration; rollback is `git revert`). Add it only for the manual
