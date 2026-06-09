@@ -7,7 +7,7 @@ import Card from '../components/Card.astro';
 import Stat from '../components/Stat.astro';
 import { localizedHref } from '../data/nav.ts';
 import { STATS } from '../data/facts.ts';
-import { HOME_PRODUCTS, HOME_FEATURES, HOME_PARTNERS, HOME_STORIES } from '../data/home.ts';
+import { HOME_PRODUCTS, HOME_PRODUCTS_ES_EXTRA, HOME_FEATURES, HOME_PARTNERS, HOME_STORIES } from '../data/home.ts';
 import { arrowEnd, DEFAULT_LOCALE, type Locale } from '../i18n/index.ts';
 import { UI } from '../i18n/ui.ts';
 
@@ -28,6 +28,12 @@ const products = HOME_PRODUCTS.map((p) => ({
   name: ui.products[p.to as keyof typeof ui.products] ?? p.name,
   points: h.productPoints[p.to as keyof typeof h.productPoints] ?? p.points,
 }));
+// SABIO is a Spanish-only offering: append its card to the suite under /es only.
+if (locale === 'es') {
+  for (const p of HOME_PRODUCTS_ES_EXTRA) {
+    products.push({ icon: p.icon, to: p.to, name: p.name, points: p.points });
+  }
+}
 const features = HOME_FEATURES.map((f, i) => ({ img: f.img, ...(h.features[i] ?? { title: f.title, body: f.body }) }));
 const stories = HOME_STORIES.map((s, i) => ({ tag: s.tag, title: h.stories[i] ?? s.title }));
 ---

@@ -8,6 +8,8 @@ export const ROUTES: Record<string, string> = {
   'p-teach': '/tangerine-teach',
   'p-coach': '/tangerine-coach',
   'p-acuity': '/tangerine-acuity',
+  // SABIO — Spanish-only offering; its page is generated only under /es.
+  'p-sabio': '/sabio',
   impact: '/impact',
   'user-stories': '/user-stories',
   faqs: '/faqs',

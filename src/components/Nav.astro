@@ -33,6 +33,8 @@ const nav = [
       { label: ui.products['p-coach'], to: 'p-coach' },
       { label: ui.products['p-teach'], to: 'p-teach' },
       { label: ui.products['p-acuity'], to: 'p-acuity' },
+      // SABIO — listed only in the Spanish nav (offering is es-only).
+      ...(locale === 'es' ? [{ label: 'SABIO', to: 'p-sabio' }] : []),
     ],
   },
   {

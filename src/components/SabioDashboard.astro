@@ -1,0 +1,144 @@
+---
+// Product UI mockup: "Panel del docente" — a teacher dashboard where SABIO
+// surfaces an early-warning attendance alert. Ported from the SABIO design
+// handoff (dashboard.jsx). Tones map to the site Badge: good→success,
+// concern→error, watch→warning.
+import Badge from './Badge.astro';
+import SabioOwl from './SabioOwl.astro';
+
+const students = [
+  { n: 'Valentina Cruz', a: 'Asistencia 98%', tone: 'success', label: 'En curso' },
+  { n: 'Mateo Rojas', a: '4 ausencias · 2 sem.', tone: 'error', label: 'Atención' },
+  { n: 'Sofía Méndez', a: 'Asistencia 91%', tone: 'warning', label: 'Observar' },
+  { n: 'Diego Herrera', a: 'Asistencia 96%', tone: 'success', label: 'En curso' },
+] as const;
+
+const tiles = [
+  ['94%', 'Asistencia hoy'],
+  ['2', 'Alertas activas'],
+  ['7.8', 'Promedio formativo'],
+];
+
+const initials = (n: string) => n.split(' ').map((w) => w[0]).join('');
+---
+<div class="sabio-dash">
+  {/* app bar */}
+  <div class="sabio-dash__bar">
+    <SabioOwl size={30} blink={false} />
+    <div style="line-height:1.15;">
+      <div style="font-size:14.5px;font-weight:700;">Panel del docente</div>
+      <div style="font-size:11.5px;opacity:0.7;">3.° B · Profa. Ramírez</div>
+    </div>
+    <div class="sabio-dash__offline">
+      <span class="sabio-dash__dot"></span>SIN CONEXIÓN
+    </div>
+  </div>
+
+  <div style="padding:18px;">
+    {/* stat tiles */}
+    <div class="sabio-dash__tiles">
+      {tiles.map(([v, l]) => (
+        <div class="sabio-dash__tile">
+          <div class="sabio-dash__tilev">{v}</div>
+          <div class="sabio-dash__tilel">{l}</div>
+        </div>
+      ))}
+    </div>
+
+    {/* alert card */}
+    <div class="sabio-dash__alert">
+      <div style="flex:none;margin-top:2px;"><SabioOwl size={42} blink={false} /></div>
+      <div>
+        <div class="sabio-dash__alert-eyebrow">Alerta temprana de SABIO</div>
+        <div class="sabio-dash__alert-body">
+          Mateo Rojas acumula <strong>4 ausencias</strong> en dos semanas y bajó en lectura. Conviene contactar a la familia.
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;">
+          <button class="sabio-dash__btn sabio-dash__btn--primary">Registrar intervención</button>
+          <button class="sabio-dash__btn sabio-dash__btn--ghost">Ver perfil</button>
+        </div>
+      </div>
+    </div>
+
+    {/* student list */}
+    <div class="sabio-dash__listhead">
+      <div class="sabio-dash__listtitle">Alumnos</div>
+      <span class="sabio-dash__listlink">Ver los 28 →</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {students.map((s) => (
+        <div class="sabio-dash__row">
+          <div class="sabio-dash__avatar">{initials(s.n)}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13.5px;font-weight:600;color:var(--text-strong);">{s.n}</div>
+            <div style="font-size:11.5px;color:var(--text-muted);">{s.a}</div>
+          </div>
+          <Badge tone={s.tone} dot>{s.label}</Badge>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .sabio-dash {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    width: 100%;
+    max-width: 480px;
+  }
+  .sabio-dash__bar {
+    background: var(--surface-inverse);
+    color: #fff;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .sabio-dash__offline {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-400);
+  }
+  .sabio-dash__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold-400); }
+  .sabio-dash__tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .sabio-dash__tile { background: var(--surface-page); border-radius: 12px; padding: 12px 10px; text-align: center; }
+  .sabio-dash__tilev { font-family: var(--font-mono); font-size: 24px; font-weight: 700; color: var(--text-strong); line-height: 1; }
+  .sabio-dash__tilel { font-size: 10.5px; color: var(--text-muted); margin-top: 5px; font-weight: 600; }
+  .sabio-dash__alert {
+    display: flex;
+    gap: 12px;
+    background: var(--red-100);
+    border: 1px solid #F2B6A6;
+    border-radius: 14px;
+    padding: 13px 14px;
+    margin-bottom: 16px;
+  }
+  .sabio-dash__alert-eyebrow {
+    font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--tangerine-700); margin-bottom: 3px;
+  }
+  .sabio-dash__alert-body { font-size: 14px; color: var(--text-strong); font-weight: 600; line-height: 1.35; }
+  .sabio-dash__btn {
+    border: none; font-weight: 700; font-size: 12.5px; padding: 7px 14px; border-radius: 99px;
+    cursor: pointer; font-family: var(--font-sans);
+  }
+  .sabio-dash__btn--primary { background: var(--tangerine-500); color: #fff; }
+  .sabio-dash__btn--ghost { border: 1px solid var(--border-strong); background: #fff; color: var(--text-body); }
+  .sabio-dash__listhead { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .sabio-dash__listtitle { font-size: 12.5px; font-weight: 700; color: var(--text-strong); text-transform: uppercase; letter-spacing: .05em; }
+  .sabio-dash__listlink { font-size: 12px; color: var(--text-link); font-weight: 600; }
+  .sabio-dash__row { display: flex; align-items: center; gap: 11px; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--border-subtle); }
+  .sabio-dash__avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--tangerine-100);
+    color: var(--tangerine-700); font-weight: 700; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; flex: none;
+  }
+</style>

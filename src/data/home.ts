@@ -34,6 +34,22 @@ export const HOME_PRODUCTS = [
   },
 ];
 
+// SABIO — Spanish-only home-suite card (CONTENIDO PROVISIONAL). Appended to the
+// product suite by HomeView only when locale === 'es'; its copy is intentionally
+// Spanish (this offering is not translated into other locales).
+export const HOME_PRODUCTS_ES_EXTRA = [
+  {
+    icon: '/assets/sabio/sabio-owl.png',
+    name: 'SABIO',
+    to: 'p-sabio',
+    points: [
+      'Asistencia, comportamiento y evaluación formativa en una sola herramienta',
+      'Alertas tempranas para intervenir antes de que un alumno se atrase',
+      'Para escuelas privadas de bajo costo en América Latina — funciona sin internet',
+    ],
+  },
+];
+
 export const HOME_FEATURES = [
   {
     img: '/assets/illustrations/global.png',

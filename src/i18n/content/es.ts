@@ -96,6 +96,9 @@ export const es: Partial<SiteContent> = {
       ],
       cta: { heading: 'Descubra cómo Tangerine:Agudeza puede apoyar su trabajo.', label: 'Contáctenos', to: 'contact' },
     },
+    // SABIO is a Spanish-only offering with a bespoke landing page
+    // (src/pages/es/sabio.astro + src/views/SabioView.astro) — not the generic
+    // product template — so it is intentionally NOT listed here.
   } as SiteContent['products'],
 
   principles: [

@@ -20,6 +20,8 @@ const cols: { title: string; links: [string, string][] }[] = [
       [ui.products['p-teach'], 'p-teach'],
       [ui.products['p-coach'], 'p-coach'],
       [ui.products['p-acuity'], 'p-acuity'],
+      // SABIO — listed only in the Spanish footer (offering is es-only).
+      ...(locale === 'es' ? [['SABIO', 'p-sabio'] as [string, string]] : []),
     ],
   },
   {
